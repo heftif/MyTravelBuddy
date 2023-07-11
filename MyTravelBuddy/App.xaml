@@ -2,6 +2,7 @@
 <Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:MyTravelBuddy"
+             xmlns:model="clr-namespace:MyTravelBuddy.Models"
              x:Class="MyTravelBuddy.App">
     <Application.Resources>
         <ResourceDictionary>
@@ -61,6 +62,28 @@
                 <Setter Property="FontSize" Value="24"/>
                 <Setter Property="FontAttributes" Value="Bold"/>
             </Style>
+
+            <Style x:Key="TourDetailTitleLabel" BasedOn="{StaticResource MediumLabel}" TargetType="Label">
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="HorizontalOptions" Value="Center"/>
+                <Setter Property="Padding" Value="5"/>
+            </Style>
+
+
+            <DataTemplate x:Key="CarouselStyle">
+                        <VerticalStackLayout>
+                            <Image Source="{Binding ImagePath}"
+                                   HeightRequest="150"
+                                   WidthRequest="150"
+                                   BackgroundColor="LightGrey"
+                                   Aspect="AspectFit"
+                                   />
+                            <Label Text="{Binding Text}"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions= "Center"
+                                   FontAttributes="Bold"/>
+                        </VerticalStackLayout>
+            </DataTemplate>
 
         </ResourceDictionary>
     </Application.Resources>

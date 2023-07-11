@@ -14,7 +14,10 @@ public class Tour : IDomainObject
     public int TourTypeId { get; set; }
 
     [ForeignKey(typeof(Vehicle))] // define foreign key
-    public int VehicleId { get; set; }
+    public int VehicleToAndFromId { get; set; }
+
+    [ForeignKey(typeof(Vehicle))] // define foreign key
+    public int VehicleAtLocationId { get; set; }
 
     public string GeneralLocation { get; set; }
     public DateTime StartsOn { get; set; }

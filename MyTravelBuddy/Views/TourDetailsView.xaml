@@ -8,19 +8,49 @@
              xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
              ios:Page.UseSafeArea="True"
              Title="TourDetailsView">
-    <VerticalStackLayout>
+    <ScrollView>
+    <VerticalStackLayout Padding="5">
 
-        <CarouselView ItemsSource="{Binding Vehicles}">
-            <CarouselView.ItemTemplate>
-                <DataTemplate x:DataType="model:Vehicle"> <!-- reference necessary to not create an error when building -->
-                    <VerticalStackLayout>
-                        <Image Source="{Binding ImagePath}"/>
-                        <Label Text="{Binding Text}"/>
-                    </VerticalStackLayout>
-                </DataTemplate>
-            </CarouselView.ItemTemplate>
+        <Label Text="What Kind of Trip is it?"
+               Style="{StaticResource TourDetailTitleLabel}"
+                />
+
+         
+        <CarouselView ItemsSource="{Binding TourTypes}"
+                      CurrentItem="{Binding SelectedTourType}"
+                      PeekAreaInsets="100"
+                      Loop="True"
+                      MaximumHeightRequest="200"
+                      ItemTemplate="{StaticResource CarouselStyle}"> <!-- for showing adjacent items-->
         </CarouselView>
 
 
+        <Label Text="Main Mode Of Transport to and from Location"
+               Style="{StaticResource TourDetailTitleLabel}"
+               />
+
+        <CarouselView ItemsSource="{Binding VehiclesToAndFrom}"
+                      CurrentItem="{Binding SelectedVehicleToAndFrom}"
+                      PeekAreaInsets="100"
+                      Loop="True"
+                      MaximumHeightRequest="200"
+                      ItemTemplate="{StaticResource CarouselStyle}"> <!-- for showing adjacent items-->
+        </CarouselView>
+
+
+        <Label Text="Main Mode Of Transport at Location"
+               Style="{StaticResource TourDetailTitleLabel}"
+                />
+
+        <CarouselView ItemsSource="{Binding VehiclesAtLocation}"
+                      CurrentItem="{Binding SelectedVehicleAtLocation}"
+                      PeekAreaInsets="100"
+                      Loop="True"
+                      MaximumHeightRequest="200"
+                      ItemTemplate="{StaticResource CarouselStyle}"> <!-- for showing adjacent items-->
+        </CarouselView>
+
+         
     </VerticalStackLayout>
+     </ScrollView>
 </ContentPage>

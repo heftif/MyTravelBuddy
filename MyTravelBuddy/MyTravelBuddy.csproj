@@ -74,6 +74,22 @@
 	  <None Remove="Resources\Images\train.svg" />
 	  <None Remove="Resources\Images\van.svg" />
 	  <None Remove="Resources\Images\bike.svg" />
+	  <None Remove="Resources\Images\feet.png" />
+	  <None Remove="Resources\Images\boat.png" />
+	  <None Remove="Resources\Images\train.png" />
+	  <None Remove="Resources\Images\van.png" />
+	  <None Remove="Resources\Images\ship.png" />
+	  <None Remove="Resources\Images\plane.png" />
+	  <None Remove="Resources\Images\car.png" />
+	  <None Remove="Resources\Images\bike.png" />
+	  <None Remove="Resources\Images\hike.png" />
+	  <None Remove="Resources\Images\biketour.svg" />
+	  <None Remove="Resources\Images\roadtrip.svg" />
+	  <None Remove="Resources\Images\beachtrip.svg" />
+	  <None Remove="Resources\Images\beachtrip.png" />
+	  <None Remove="Resources\Images\citytrip.png" />
+	  <None Remove="Resources\Images\businesstrip.png" />
+	  <None Remove="Resources\Images\cruisetrip.png" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Models\" />
@@ -89,5 +105,21 @@
 	  <BundleResource Include="Resources\Images\boat.svg" />
 	  <BundleResource Include="Resources\Images\train.svg" />
 	  <BundleResource Include="Resources\Images\van.svg" />
+	  <BundleResource Include="Resources\Images\feet.png" />
+	  <BundleResource Include="Resources\Images\boat.png" />
+	  <BundleResource Include="Resources\Images\train.png" />
+	  <BundleResource Include="Resources\Images\van.png" />
+	  <BundleResource Include="Resources\Images\ship.png" />
+	  <BundleResource Include="Resources\Images\plane.png" />
+	  <BundleResource Include="Resources\Images\car.png" />
+	  <BundleResource Include="Resources\Images\bike.png" />
+	  <BundleResource Include="Resources\Images\hike.png" />
+	  <BundleResource Include="Resources\Images\biketour.svg" />
+	  <BundleResource Include="Resources\Images\roadtrip.svg" />
+	  <BundleResource Include="Resources\Images\beachtrip.svg" />
+	  <BundleResource Include="Resources\Images\beachtrip.png" />
+	  <BundleResource Include="Resources\Images\citytrip.png" />
+	  <BundleResource Include="Resources\Images\businesstrip.png" />
+	  <BundleResource Include="Resources\Images\cruisetrip.png" />
 	</ItemGroup>
 </Project>

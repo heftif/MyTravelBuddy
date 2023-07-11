@@ -14,7 +14,18 @@ public partial class TourDetailsViewModel : BaseViewModel, IQueryAttributable
     [ObservableProperty]
     bool isInEditMode;
 
-    public ObservableCollection<Vehicle> Vehicles { get; } = new();
+    [ObservableProperty]
+    Vehicle selectedVehicleToAndFrom;
+
+    [ObservableProperty]
+    Vehicle selectedVehicleAtLocation;
+
+    [ObservableProperty]
+    TourType selectedTourType;
+
+    public ObservableCollection<Vehicle> VehiclesToAndFrom { get; } = new();
+    public ObservableCollection<Vehicle> VehiclesAtLocation { get; } = new();
+
     public ObservableCollection<TourType> TourTypes { get; } = new();
 
     public TourDetailsViewModel(SqlDatabase database) : base(database)
@@ -50,14 +61,32 @@ public partial class TourDetailsViewModel : BaseViewModel, IQueryAttributable
         var vehicles = await Database.ListAll<Vehicle>();
 
         foreach (var vehicle in vehicles)
-            Vehicles.Add(vehicle);
+            VehiclesToAndFrom.Add(vehicle);
+
+        var vehicles2 = await Database.ListAll<Vehicle>();
+
+        foreach (var vehicle in vehicles2)
+            VehiclesAtLocation.Add(vehicle);
 
         var tourTypes = await Database.ListAll<TourType>();
 
         foreach (var tourType in tourTypes)
             TourTypes.Add(tourType);
 
+    }
 
+    partial void OnSelectedTourTypeChanged(TourType value)
+    {
+        if (value.IsHike())
+            SelectedVehicleAtLocation = VehiclesAtLocation.Where(x => x.Usage == TourUsage.WalkUsage).FirstOrDefault();
+        else if(value.IsBike())
+            SelectedVehicleAtLocation = VehiclesAtLocation.Where(x => x.Usage == TourUsage.CycleUsage).FirstOrDefault();
+        else if(value.IsRoadTrip())
+            SelectedVehicleAtLocation = VehiclesAtLocation.Where(x => x.Usage == TourUsage.CarUsage).FirstOrDefault();
+        else if (value.IsCityTrip())
+            SelectedVehicleAtLocation = VehiclesAtLocation.Where(x => x.Usage == TourUsage.WalkUsage).FirstOrDefault();
+        else if (value.IsCruise())
+            SelectedVehicleAtLocation = VehiclesAtLocation.Where(x => x.Usage == TourUsage.BoatUsage).FirstOrDefault();
     }
 }
 
