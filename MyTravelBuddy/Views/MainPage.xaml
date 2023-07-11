@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MyTravelBuddy.MainPage">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Spacing="25"
+            Padding="30,0"
+            VerticalOptions="Start">
+
+                <!-- use grid to overlay text and image button-->
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <ImageButton Source="travel.png"
+                                 HeightRequest="300"
+                                 IsEnabled = "{Binding IsNotBusy}"
+                                 CornerRadius="20"
+                                 BorderColor="Black"
+                                 Aspect="Fill"
+                                 Grid.Row="0"
+                                 Command="{Binding CreateNewTourCommand}"
+                                 />
+
+                    <!-- set background of label to check what horizontaltextalignment and
+                        verticaltextalignment do-->
+                    <Label Text="Neue Reise Planen"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center"
+                           Grid.Row="0"
+                           TextColor="Black"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           BackgroundColor="White"
+                           Style="{StaticResource LargeLabel}"
+                           >
+                            <Label.Shadow>
+                                <Shadow Brush="Black"
+                                    Offset="20,20"
+                                    Radius="40"
+                                    Opacity="1" />
+                            </Label.Shadow>
+
+                        </Label>
+                    
+                </Grid>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
+

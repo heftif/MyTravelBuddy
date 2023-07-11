@@ -9,6 +9,59 @@
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <Color x:Key="LightBackground">#FAF9F8</Color>
+            <Color x:Key="DarkBackground">LightGrey</Color>
+
+            <Color x:Key="LabelText">#1F1F1F</Color>
+            <Color x:Key="LabelTextDark">White</Color>
+
+             <Style x:Key="MainButtonStyle" TargetType="ImageButton">
+                <Setter Property="BorderWidth" Value="2" />
+                <Setter Property="Margin" Value="2"/>
+                <Setter Property="Aspect" Value="Fill"/>
+                <Setter Property="HeightRequest" Value="200"/>
+                <Setter Property="WidthRequest" Value="200"/>
+                <Setter Property="BorderColor" Value="#DDDDDD" />
+                <Setter Property="Background" Value="{AppThemeBinding Light={StaticResource LightBackground}, Dark={StaticResource DarkBackground}}" />
+                <Setter Property="CornerRadius" Value="30" />
+            </Style>
+
+            <Style x:Key="NavigationButtonStyle" TargetType="ImageButton" BasedOn="{StaticResource MainButtonStyle}">
+                <Setter Property="HeightRequest" Value="150"/>
+                <Setter Property="WidthRequest" Value="150"/>
+            </Style>
+
+            <Style x:Key="FrameObjectInfoStyle" TargetType="Frame">
+                <Setter Property="Margin" Value="0,10,0,0"/>
+                <Setter Property="HorizontalOptions" Value="FillAndExpand"/>
+                <Setter Property="Padding" Value="3"/>
+                <Setter Property="IsClippedToBounds" Value="True"/>
+                <Setter Property="CornerRadius" Value="15"/>
+            </Style>
+
+            <Style TargetType="Label" x:Key="BaseLabel">
+                <Setter Property="FontFamily" Value="OpenSansRegular" />
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource LabelText}, Dark={StaticResource LabelTextDark}}" />
+            </Style>
+
+            <Style x:Key="MicroLabel" BasedOn="{StaticResource BaseLabel}" TargetType="Label">
+                <Setter Property="FontSize" Value="10"/>
+            </Style>
+
+            <Style x:Key="SmallLabel" BasedOn="{StaticResource BaseLabel}" TargetType="Label">
+                <Setter Property="FontSize" Value="12"/>
+            </Style>
+
+            <Style x:Key="MediumLabel" BasedOn="{StaticResource BaseLabel}" TargetType="Label">
+                <Setter Property="FontSize" Value="16"/>
+            </Style>
+
+            <Style x:Key="LargeLabel" BasedOn="{StaticResource BaseLabel}" TargetType="Label">
+                <Setter Property="FontSize" Value="24"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+            </Style>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

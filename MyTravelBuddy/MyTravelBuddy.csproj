@@ -38,9 +38,6 @@
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
 
 		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
-
-		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
 		<MauiImage Update="Resources\Images\dotnet_bot.svg" BaseSize="168,208" />
 
@@ -49,10 +46,48 @@
 
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+		<MauiSplashScreen Include="Resources\Splash\splash.svg" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
+		<PackageReference Include="AsyncAwaitBestPractices" Version="6.0.6" />
+		<PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
+		<PackageReference Include="SQLiteNetExtensions" Version="2.1.0" />
+		<PackageReference Include="SQLiteNetExtensions.Async" Version="2.1.0" />
+		<PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.5" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Remove="Resources\Splash\1957943.svg" />
+	  <None Remove="Models\" />
+	  <None Remove="Services\" />
+	  <None Remove="ViewModels\" />
+	  <None Remove="Views\" />
+	  <None Remove="Resources\Images\travel.png" />
+	  <None Remove="Resources\Images\car.svg" />
+	  <None Remove="Resources\Images\plane.svg" />
+	  <None Remove="Resources\Images\ship.svg" />
+	  <None Remove="Resources\Images\feet.svg" />
+	  <None Remove="Resources\Images\boat.svg" />
+	  <None Remove="Resources\Images\train.svg" />
+	  <None Remove="Resources\Images\van.svg" />
+	  <None Remove="Resources\Images\bike.svg" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Models\" />
+	  <Folder Include="Services\" />
+	  <Folder Include="ViewModels\" />
+	  <Folder Include="Views\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <BundleResource Include="Resources\Images\car.svg" />
+	  <BundleResource Include="Resources\Images\plane.svg" />
+	  <BundleResource Include="Resources\Images\ship.svg" />
+	  <BundleResource Include="Resources\Images\feet.svg" />
+	  <BundleResource Include="Resources\Images\boat.svg" />
+	  <BundleResource Include="Resources\Images\train.svg" />
+	  <BundleResource Include="Resources\Images\van.svg" />
+	</ItemGroup>
 </Project>

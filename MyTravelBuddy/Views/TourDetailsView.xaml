@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MyTravelBuddy.Views.TourDetailsView"
+             xmlns:viewmodel="clr-namespace:MyTravelBuddy.ViewModels"
+             xmlns:model="clr-namespace:MyTravelBuddy.Models"
+             x:DataType="viewmodel:TourDetailsViewModel"
+             xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+             ios:Page.UseSafeArea="True"
+             Title="TourDetailsView">
+    <VerticalStackLayout>
+
+        <CarouselView ItemsSource="{Binding Vehicles}">
+            <CarouselView.ItemTemplate>
+                <DataTemplate x:DataType="model:Vehicle"> <!-- reference necessary to not create an error when building -->
+                    <VerticalStackLayout>
+                        <Image Source="{Binding ImagePath}"/>
+                        <Label Text="{Binding Text}"/>
+                    </VerticalStackLayout>
+                </DataTemplate>
+            </CarouselView.ItemTemplate>
+        </CarouselView>
+
+
+    </VerticalStackLayout>
+</ContentPage>
