@@ -98,15 +98,12 @@ public class SqlDatabase : ISqlDatabase
     }
 
 
-    // generic method for listing a given domain object of a table
+    // generic method for listing a given domain object of a table. Id must be marked as primary key!
     public async Task<TObject> GetObject<TObject>(int pk) where TObject : new()
     {
         await Init();
 
         return await Database.GetAsync<TObject>(pk);
-
-        //return await Database.Table<TObject>().Where(where).FirstOrDefaultAsync();
-
         
     }
 

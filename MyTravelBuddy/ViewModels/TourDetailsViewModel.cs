@@ -8,8 +8,7 @@ public partial class TourDetailsViewModel : BaseViewModel, IQueryAttributable
 {
     private int? tourId;
 
-    [ObservableProperty]
-    Tour tour;
+    public Tour Tour;
 
     [ObservableProperty]
     bool isInEditMode;
@@ -28,8 +27,23 @@ public partial class TourDetailsViewModel : BaseViewModel, IQueryAttributable
 
     public ObservableCollection<TourType> TourTypes { get; } = new();
 
+    //triggered when pressing back button
+    [RelayCommand]
+    public async Task GoBackAsync()
+    {
+        Tour.VehicleToAndFromId = SelectedVehicleToAndFrom.VehicleId;
+        Tour.VehicleAtLocationId = SelectedVehicleAtLocation.VehicleId;
+        Tour.TourTypeId = SelectedTourType.TourTypeId;
+
+        //but now we always update when leaving the screen, which might not be ideal
+        //also, when we have more fields, we should consider a validate function before saving
+        await App.DatabaseService.SaveItemAsync(Tour);
+
+        await Shell.Current.GoToAsync("..", true);
+    }
+
     public TourDetailsViewModel()
-	{
+    {
         IsLoaded = false;
         IsInEditMode = false;
     }
@@ -41,24 +55,12 @@ public partial class TourDetailsViewModel : BaseViewModel, IQueryAttributable
         if (!IsLoaded)
         {
             LoadAsync().SafeFireAndForget();
-            IsLoaded = true;
         }
     }
 
     async Task LoadAsync()
     {
-        if(tourId.HasValue && tourId > 0)
-        {
-            //figure out the issue here!
-            //get object
-            Tour = await App.DatabaseService.GetObject<Tour>(tourId.Value);
-        }
-        else
-        {
-            //start in edit mode
-            IsInEditMode = true;
-        }
-
+        //load necessary objects
         var vehicles = await App.DatabaseService.ListAll<Vehicle>();
 
         foreach (var vehicle in vehicles)
@@ -74,20 +76,44 @@ public partial class TourDetailsViewModel : BaseViewModel, IQueryAttributable
         foreach (var tourType in tourTypes)
             TourTypes.Add(tourType);
 
+
+        if (tourId.HasValue && tourId > 0)
+        {
+            //get object
+            Tour = await App.DatabaseService.GetObject<Tour>(tourId.Value);
+
+            //load the parameters for the view
+            SelectedVehicleToAndFrom = VehiclesToAndFrom.Where(x => x.VehicleId == Tour.VehicleToAndFromId).FirstOrDefault();
+            SelectedVehicleAtLocation= VehiclesAtLocation.Where(x => x.VehicleId == Tour.VehicleAtLocationId).FirstOrDefault();
+            SelectedTourType = TourTypes.Where(x => x.TourTypeId == Tour.TourTypeId).FirstOrDefault();
+        }
+        else
+        {
+            //start in edit mode
+            IsInEditMode = true;
+        }
+
+        IsLoaded = true;
+
     }
 
     partial void OnSelectedTourTypeChanged(TourType value)
     {
-        if (value.IsHike())
-            SelectedVehicleAtLocation = VehiclesAtLocation.Where(x => x.Usage == TourUsage.WalkUsage).FirstOrDefault();
-        else if(value.IsBike())
-            SelectedVehicleAtLocation = VehiclesAtLocation.Where(x => x.Usage == TourUsage.CycleUsage).FirstOrDefault();
-        else if(value.IsRoadTrip())
-            SelectedVehicleAtLocation = VehiclesAtLocation.Where(x => x.Usage == TourUsage.CarUsage).FirstOrDefault();
-        else if (value.IsCityTrip())
-            SelectedVehicleAtLocation = VehiclesAtLocation.Where(x => x.Usage == TourUsage.WalkUsage).FirstOrDefault();
-        else if (value.IsCruise())
-            SelectedVehicleAtLocation = VehiclesAtLocation.Where(x => x.Usage == TourUsage.BoatUsage).FirstOrDefault();
+        if (IsLoaded)
+        {
+            if (value.IsHike())
+                SelectedVehicleAtLocation = VehiclesAtLocation.Where(x => x.Usage == TourUsage.WalkUsage).FirstOrDefault();
+            else if (value.IsBike())
+                SelectedVehicleAtLocation = VehiclesAtLocation.Where(x => x.Usage == TourUsage.CycleUsage).FirstOrDefault();
+            else if (value.IsRoadTrip())
+                SelectedVehicleAtLocation = VehiclesAtLocation.Where(x => x.Usage == TourUsage.CarUsage).FirstOrDefault();
+            else if (value.IsCityTrip())
+                SelectedVehicleAtLocation = VehiclesAtLocation.Where(x => x.Usage == TourUsage.WalkUsage).FirstOrDefault();
+            else if (value.IsCruise())
+                SelectedVehicleAtLocation = VehiclesAtLocation.Where(x => x.Usage == TourUsage.BoatUsage).FirstOrDefault();
+        }
     }
+
+    
 }
 

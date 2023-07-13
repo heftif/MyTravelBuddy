@@ -7,14 +7,18 @@
              x:DataType="viewmodel:TourDetailsViewModel"
              xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
              ios:Page.UseSafeArea="True"
-             Title="TourDetailsView">
+             Title="TourDetailsView"
+             >
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding GoBackCommand}" />   
+    </Shell.BackButtonBehavior>
+
     <ScrollView>
     <VerticalStackLayout Padding="5">
 
         <Label Text="What Kind of Trip is it?"
                Style="{StaticResource TourDetailTitleLabel}"
                 />
-
          
         <CarouselView ItemsSource="{Binding TourTypes}"
                       CurrentItem="{Binding SelectedTourType}"
