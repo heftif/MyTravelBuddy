@@ -85,6 +85,35 @@
                         </VerticalStackLayout>
             </DataTemplate>
 
+            <DataTemplate x:Key="CarouselStylePopUp">
+                        <VerticalStackLayout>
+                            <Image Source="{Binding ImagePath}"
+                                   HeightRequest="120"
+                                   WidthRequest="120"
+                                   BackgroundColor="LightGrey"
+                                   Aspect="AspectFit"
+                                   />
+                            <Label Text="{Binding Text}"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions= "Center"
+                                   FontAttributes="Bold"/>
+                        </VerticalStackLayout>
+            </DataTemplate>
+
+            <Style x:Key="MainOverlayLabel" TargetType="Label" BasedOn="{StaticResource LargeLabel}" >
+                <Setter Property="HorizontalTextAlignment" Value="Center"/>
+                <Setter Property="VerticalTextAlignment" Value="Center"/>
+                <Setter Property="TextColor" Value="Black"/>
+                <Setter Property="HorizontalOptions" Value="Center"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+                <Setter Property="BackgroundColor" Value="White"/>
+                <Setter Property="Shadow.Brush" Value="Black"/>
+                <Setter Property="Shadow.Offset" Value="20,20"/>
+                <Setter Property="Shadow.Radius" Value="40"/>
+                <Setter Property="Shadow.Opacity" Value="1"/> 
+            </Style>
+
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

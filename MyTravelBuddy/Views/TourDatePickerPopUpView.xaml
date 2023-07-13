@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="MyTravelBuddy.Views.TourDatePickerPopUpView"
+             >
+    <ScrollView>
+        <VerticalStackLayout Padding="15">
+
+            <Label Text="Let's Talk Dates" 
+                   BackgroundColor="LightGray"
+                   HorizontalOptions="FillAndExpand"
+                   HorizontalTextAlignment="Center"
+                   Margin="0,0,0,20"
+                   Style="{StaticResource TourDetailTitleLabel}"/>
+
+            <Label Text="When will your trip start?" Style="{StaticResource MediumLabel}"/>
+
+            <DatePicker x:Name="datePickerStart"
+                        DateSelected="datePickerStart_DateSelected"
+                        Format="dd.MM.yyyy"
+                        HorizontalOptions="Center"/>
+
+            <Label Text="When will your trip end?" Style="{StaticResource MediumLabel}" Margin="0,15,0,0"/>
+
+            <DatePicker x:Name="datePickerEnd"
+                        DateSelected="datePickerEnd_DateSelected"
+                        Format="dd.MM.yyyy"
+                        HorizontalOptions="Center"/>
+
+            <Button Text="Okay!" Clicked="Button_Clicked"/>
+        </VerticalStackLayout>
+    </ScrollView>
+</toolkit:Popup>

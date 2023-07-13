@@ -3,16 +3,11 @@ using SQLite;
 
 namespace MyTravelBuddy.Models;
 
-public class TourType : IDomainObject
+public class TourType : TourCollectionBase, IDomainObject
 {
-
 
     [PrimaryKey, AutoIncrement]
     public int TourTypeId { get; set; }
-
-    public string Text { get; set; }
-    public string ImagePath { get; set; }
-    public int Usage { get; set; }
 
     public TourType()
 	{

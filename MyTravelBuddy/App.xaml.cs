@@ -2,11 +2,20 @@
 
 public partial class App : Application
 {
-	public App()
+    public static IServiceProvider Services;
+    public static IAlertService AlertService;
+    public static ISqlDatabase DatabaseService;
+
+    public App(IServiceProvider provider)
 	{
 		InitializeComponent();
 
-		MainPage = new AppShell();
+        //these services can then directly be accessed via the app
+        Services = provider;
+        AlertService = Services.GetService<IAlertService>();
+        DatabaseService = Services.GetService<ISqlDatabase>();
+
+        MainPage = new AppShell();
 	}
 }
 

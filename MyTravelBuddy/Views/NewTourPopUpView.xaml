@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             CanBeDismissedByTappingOutsideOfPopup="False"
+             x:Class="MyTravelBuddy.Views.NewTourPopUpView">
+    <ScrollView>
+        <VerticalStackLayout Padding="5">
+
+
+            <Label x:Name="titleLabel"
+                   Style="{StaticResource TourDetailTitleLabel}"
+                   />
+
+            <CarouselView x:Name="selectItem"
+                          PeekAreaInsets="80"
+                          Loop="True"
+                          HeightRequest="180"
+                          MaximumHeightRequest="200"
+                          ItemTemplate="{StaticResource CarouselStylePopUp}"> <!-- for showing adjacent items-->
+            </CarouselView>
+
+            <Button Clicked="Button_Clicked" HeightRequest="30" Text="Okay!"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</toolkit:Popup>

@@ -50,6 +50,8 @@
                       ItemTemplate="{StaticResource CarouselStyle}"> <!-- for showing adjacent items-->
         </CarouselView>
 
+
+
          
     </VerticalStackLayout>
      </ScrollView>

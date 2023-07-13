@@ -28,7 +28,7 @@ public partial class TourDetailsViewModel : BaseViewModel, IQueryAttributable
 
     public ObservableCollection<TourType> TourTypes { get; } = new();
 
-    public TourDetailsViewModel(SqlDatabase database) : base(database)
+    public TourDetailsViewModel()
 	{
         IsLoaded = false;
         IsInEditMode = false;
@@ -49,8 +49,9 @@ public partial class TourDetailsViewModel : BaseViewModel, IQueryAttributable
     {
         if(tourId.HasValue && tourId > 0)
         {
+            //figure out the issue here!
             //get object
-            Tour = await Database.GetObject<Tour>(x => x.GetId() == tourId.Value);
+            Tour = await App.DatabaseService.GetObject<Tour>(tourId.Value);
         }
         else
         {
@@ -58,17 +59,17 @@ public partial class TourDetailsViewModel : BaseViewModel, IQueryAttributable
             IsInEditMode = true;
         }
 
-        var vehicles = await Database.ListAll<Vehicle>();
+        var vehicles = await App.DatabaseService.ListAll<Vehicle>();
 
         foreach (var vehicle in vehicles)
             VehiclesToAndFrom.Add(vehicle);
 
-        var vehicles2 = await Database.ListAll<Vehicle>();
+        var vehicles2 = await App.DatabaseService.ListAll<Vehicle>();
 
         foreach (var vehicle in vehicles2)
             VehiclesAtLocation.Add(vehicle);
 
-        var tourTypes = await Database.ListAll<TourType>();
+        var tourTypes = await App.DatabaseService.ListAll<TourType>();
 
         foreach (var tourType in tourTypes)
             TourTypes.Add(tourType);

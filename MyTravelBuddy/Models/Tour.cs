@@ -19,12 +19,13 @@ public class Tour : IDomainObject
     [ForeignKey(typeof(Vehicle))] // define foreign key
     public int VehicleAtLocationId { get; set; }
 
+    public string Name { get; set; }
     public string GeneralLocation { get; set; }
     public DateTime StartsOn { get; set; }
     public DateTime? EndsOn { get; set; }
 
-    public string StartsAt { get; set; }
-    public string EndsAt { get; set; }
+    //public string StartsAt { get; set; }
+    //public string EndsAt { get; set; }
 
     public Tour()
 	{

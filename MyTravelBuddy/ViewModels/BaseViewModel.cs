@@ -18,11 +18,8 @@ public partial class BaseViewModel : ObservableObject
 
 	public bool IsLoaded { get; set; }
 
-    protected SqlDatabase Database;
-
-    public BaseViewModel(SqlDatabase database)
+    public BaseViewModel()
 	{
-        Database = database;
     }
 }
 

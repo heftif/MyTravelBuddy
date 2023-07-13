@@ -1,7 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="MyTravelBuddy.MainPage">
+             xmlns:model="clr-namespace:MyTravelBuddy.Models"
+             xmlns:viewmodel="clr-namespace:MyTravelBuddy.ViewModels"
+             x:Class="MyTravelBuddy.MainPage"
+             x:DataType="viewmodel:MainViewModel">
 
     <ScrollView>
         <VerticalStackLayout
@@ -27,26 +30,36 @@
 
                     <!-- set background of label to check what horizontaltextalignment and
                         verticaltextalignment do-->
-                    <Label Text="Neue Reise Planen"
-                           HorizontalTextAlignment="Center"
-                           VerticalTextAlignment="Center"
-                           Grid.Row="0"
-                           TextColor="Black"
-                           HorizontalOptions="Center"
-                           VerticalOptions="Center"
-                           BackgroundColor="White"
-                           Style="{StaticResource LargeLabel}"
-                           >
-                            <Label.Shadow>
-                                <Shadow Brush="Black"
-                                    Offset="20,20"
-                                    Radius="40"
-                                    Opacity="1" />
-                            </Label.Shadow>
-
-                        </Label>
-                    
+                    <Label Text="Plan new Trip"  Grid.Row="0" Style="{StaticResource MainOverlayLabel}"/>
                 </Grid>
+                <CollectionView ItemsSource="{Binding Tours}"
+                                SelectionMode="None"
+                                >
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="model:Tour">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+
+                                <ImageButton Source="travel.png"
+                                             HeightRequest="150"
+                                             IsEnabled = "{Binding IsNotBusy, Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}}}"
+                                             CornerRadius="20"
+                                             BorderColor="Black"
+                                             Aspect="Fill"
+                                             Grid.Row="0"
+                                             Command="{Binding OpenTourCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}}}"
+                                             CommandParameter="{Binding .}"
+                                             />
+
+                                <Label Text="{Binding Name}"  Grid.Row="0" Style="{StaticResource MainOverlayLabel}"/>
+
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
 
         </VerticalStackLayout>
     </ScrollView>

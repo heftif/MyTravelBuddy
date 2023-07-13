@@ -5,7 +5,7 @@ using SQLite;
 
 namespace MyTravelBuddy.Services;
 
-public class SqlDatabase
+public class SqlDatabase : ISqlDatabase
 {
     public SQLiteAsyncConnection Database;
 
@@ -99,12 +99,13 @@ public class SqlDatabase
 
 
     // generic method for listing a given domain object of a table
-    public async Task<TObject> GetObject<TObject>(Expression<Func<TObject, bool>> where) where TObject : new()
+    public async Task<TObject> GetObject<TObject>(int pk) where TObject : new()
     {
         await Init();
 
+        return await Database.GetAsync<TObject>(pk);
 
-        return await Database.Table<TObject>().Where(where).FirstOrDefaultAsync();
+        //return await Database.Table<TObject>().Where(where).FirstOrDefaultAsync();
 
         
     }

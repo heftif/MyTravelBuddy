@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommunityToolkit.Maui;
+using Microsoft.Extensions.Logging;
 
 namespace MyTravelBuddy;
 
@@ -9,7 +10,8 @@ public static class MauiProgram
 		var builder = MauiApp.CreateBuilder();
 		builder
 			.UseMauiApp<App>()
-			.ConfigureFonts(fonts =>
+			.UseMauiCommunityToolkit()
+            .ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
@@ -20,7 +22,8 @@ public static class MauiProgram
 #endif
 
         //services
-        builder.Services.AddSingleton<SqlDatabase>();
+        builder.Services.AddSingleton<ISqlDatabase, SqlDatabase>();
+		builder.Services.AddSingleton <IAlertService, AlertService>();
 
         //main pages (singleton means we create the page just once)
         builder.Services.AddSingleton<MainViewModel>();
@@ -29,6 +32,7 @@ public static class MauiProgram
         //tour
         builder.Services.AddTransient<TourDetailsViewModel>();
         builder.Services.AddTransient<TourDetailsView>();
+
 
         return builder.Build();
 	}
