@@ -11,11 +11,16 @@ public partial class MainViewModel : BaseViewModel
 
     public MainViewModel()
 	{
-		LoadAsync().SafeFireAndForget();
+        //without package, fire and forget is a call for async void, which fires a task,
+        //but does not wait for its result to return and proceeds with the code. Notorious for error handling
+        //using the package should help with this and make it safer.
+        //https://johnthiriet.com/removing-async-void/
+        LoadAsync().SafeFireAndForget(onException: ex => App.AlertService.ShowAlertAsync("Error Loading Main", ex.ToString()));
     }
 
 	async Task LoadAsync()
 	{
+        // first call to database also initialises the database
 		var tours = await App.DatabaseService.ListAll<Tour>();
 
 		var toursPlanned = tours.Count > 0;

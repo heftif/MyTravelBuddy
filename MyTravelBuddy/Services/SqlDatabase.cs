@@ -10,15 +10,10 @@ public class SqlDatabase : ISqlDatabase
     public SQLiteAsyncConnection Database;
 
     bool initiated = false;
-    bool isLoaded = false;
 
     public SqlDatabase()
     {
-        if (!isLoaded)
-        {
-            Init().SafeFireAndForget();
-            isLoaded = true;
-        }
+
     }
 
     async Task Init()
@@ -45,35 +40,44 @@ public class SqlDatabase : ISqlDatabase
 
     async Task CreateTables()
     {
-        //creates a table with the schema of the given object
-        var res1 = await Database.CreateTableAsync<Vehicle>();
-
-        if (res1 == CreateTableResult.Created) //res1 == CreateTableResult.Created
+        try
         {
-            await SaveItemAsync(new Vehicle { Text = "By Foot", ImagePath = "feet.png", Usage = TourUsage.WalkUsage });
-            await SaveItemAsync(new Vehicle { Text = "By Bike", ImagePath = "bike.png", Usage = TourUsage.CycleUsage });
-            await SaveItemAsync(new Vehicle { Text = "By Car", ImagePath = "car.png", Usage = TourUsage.CarUsage });
-            await SaveItemAsync(new Vehicle { Text = "By Van", ImagePath = "van.png", Usage = TourUsage.VanUsage });
-            await SaveItemAsync(new Vehicle { Text = "By Train", ImagePath = "train.png", Usage = TourUsage.TrainUsage });
-            await SaveItemAsync(new Vehicle { Text = "By Ship", ImagePath = "ship.png", Usage = TourUsage.ShipUsage });
-            await SaveItemAsync(new Vehicle { Text = "By Boat", ImagePath = "boat.png", Usage = TourUsage.BoatUsage });
-            await SaveItemAsync(new Vehicle { Text = "By Plane", ImagePath = "plane.png", Usage = TourUsage.PlaneUsage });
+
+            await Database.CreateTableAsync<Tour>();
+
+            //creates a table with the schema of the given object
+            var res1 = await Database.CreateTableAsync<Vehicle>();
+
+            if (res1 == CreateTableResult.Created) //res1 == CreateTableResult.Created
+            {
+                await SaveItemAsync(new Vehicle { Text = "By Foot", ImagePath = "feet.png", Usage = TourUsage.WalkUsage });
+                await SaveItemAsync(new Vehicle { Text = "By Bike", ImagePath = "bike.png", Usage = TourUsage.CycleUsage });
+                await SaveItemAsync(new Vehicle { Text = "By Car", ImagePath = "car.png", Usage = TourUsage.CarUsage });
+                await SaveItemAsync(new Vehicle { Text = "By Van", ImagePath = "van.png", Usage = TourUsage.VanUsage });
+                await SaveItemAsync(new Vehicle { Text = "By Train", ImagePath = "train.png", Usage = TourUsage.TrainUsage });
+                await SaveItemAsync(new Vehicle { Text = "By Ship", ImagePath = "ship.png", Usage = TourUsage.ShipUsage });
+                await SaveItemAsync(new Vehicle { Text = "By Boat", ImagePath = "boat.png", Usage = TourUsage.BoatUsage });
+                await SaveItemAsync(new Vehicle { Text = "By Plane", ImagePath = "plane.png", Usage = TourUsage.PlaneUsage });
+            }
+
+            var res2 = await Database.CreateTableAsync<TourType>();
+
+            if (res2 == CreateTableResult.Created) //res2 == CreateTableResult.Created
+            {
+                await SaveItemAsync(new TourType { Text = "Hike", ImagePath = "hike.png", Usage = TourUsage.HikeUsage });
+                await SaveItemAsync(new TourType { Text = "Beach", ImagePath = "beachtrip.png", Usage = TourUsage.BeachUsage });
+                await SaveItemAsync(new TourType { Text = "Bike Tour", ImagePath = "biketour.png", Usage = TourUsage.BikeUsage });
+                await SaveItemAsync(new TourType { Text = "Road Trip", ImagePath = "roadtrip.png", Usage = TourUsage.RoadTripUsage });
+                await SaveItemAsync(new TourType { Text = "City Trip", ImagePath = "citytrip.png", Usage = TourUsage.CityTripUsage });
+                await SaveItemAsync(new TourType { Text = "Business Trip", ImagePath = "businesstrip.png", Usage = TourUsage.BusinessTripUsage });
+                await SaveItemAsync(new TourType { Text = "Cruise", ImagePath = "cruisetrip.png", Usage = TourUsage.CruiseUsage });
+            }
+
         }
-
-        var res2 = await Database.CreateTableAsync<TourType>();
-
-        if (res2 == CreateTableResult.Created) //res2 == CreateTableResult.Created
+        catch(Exception e)
         {
-            await SaveItemAsync(new TourType { Text = "Hike", ImagePath = "hike.png", Usage = TourUsage.HikeUsage });
-            await SaveItemAsync(new TourType { Text = "Beach", ImagePath = "beachtrip.png", Usage = TourUsage.BeachUsage });
-            await SaveItemAsync(new TourType { Text = "Bike Tour", ImagePath = "biketour.png", Usage = TourUsage.BikeUsage });
-            await SaveItemAsync(new TourType { Text = "Road Trip", ImagePath = "roadtrip.png", Usage = TourUsage.RoadTripUsage });
-            await SaveItemAsync(new TourType { Text = "City Trip", ImagePath = "citytrip.png" , Usage = TourUsage.CityTripUsage});
-            await SaveItemAsync(new TourType { Text = "Business Trip", ImagePath = "businesstrip.png", Usage = TourUsage.BusinessTripUsage });
-            await SaveItemAsync(new TourType { Text = "Cruise", ImagePath = "cruisetrip.png", Usage=TourUsage.CruiseUsage });
+            await App.AlertService.ShowAlertAsync("Error", e.ToString());
         }
-
-        await Database.CreateTableAsync<Tour>();
     }
 
     public async Task<int> SaveItemAsync<T>(T item) where T : IDomainObject

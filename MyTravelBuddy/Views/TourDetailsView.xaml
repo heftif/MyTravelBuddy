@@ -5,16 +5,69 @@
              xmlns:viewmodel="clr-namespace:MyTravelBuddy.ViewModels"
              xmlns:model="clr-namespace:MyTravelBuddy.Models"
              x:DataType="viewmodel:TourDetailsViewModel"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
              ios:Page.UseSafeArea="True"
-             Title="TourDetailsView"
+             Title="{Binding Title}"
              >
+
     <Shell.BackButtonBehavior>
         <BackButtonBehavior Command="{Binding GoBackCommand}" />   
     </Shell.BackButtonBehavior>
 
     <ScrollView>
     <VerticalStackLayout Padding="5">
+
+        <!-- Name -->
+        <Label Text="Name of the Trip"
+               Style="{StaticResource TourDetailTitleLabel}"/>
+
+        <Entry Text="{Binding Name, Mode=TwoWay}"
+               IsSpellCheckEnabled="False"
+               IsTextPredictionEnabled="False"
+               HorizontalTextAlignment="Center"
+               Background="LightGray">
+            <Entry.Behaviors>
+                <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding ValidatePropertyCommand}"/>
+            </Entry.Behaviors>
+            <Entry.Triggers>
+                <DataTrigger TargetType ="Entry"
+                             Binding="{Binding IsNameValid}"
+                             Value="False"
+                             >
+                    <Setter Property="Background" Value="Red"/>
+                </DataTrigger>
+            </Entry.Triggers>
+         </Entry>
+
+        <!-- error label-->
+        <Label Text="{Binding Error}" IsVisible="{Binding IsNameNotValid}" Style="{StaticResource ErrorLabel}"/> <!-- no converter needed for isVisible-->
+
+
+        <!-- Destination-->
+        <Label Text="Destination"
+               Style="{StaticResource TourDetailTitleLabel}"/>
+
+        <Entry Text="{Binding GeneralLocation, Mode=TwoWay}"
+               IsSpellCheckEnabled="False"
+               IsTextPredictionEnabled="False"
+               HorizontalTextAlignment="Center"
+               Background="LightGray">
+            <Entry.Behaviors>
+                <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding ValidatePropertyCommand}"/>
+            </Entry.Behaviors>
+            <Entry.Triggers>
+                <DataTrigger TargetType ="Entry"
+                             Binding="{Binding IsDestinationValid}"
+                             Value="False"
+                             >
+                    <Setter Property="Background" Value="Red"/>
+                </DataTrigger>
+            </Entry.Triggers>
+         </Entry>
+
+        <!-- error label-->
+        <Label Text="{Binding Error}" IsVisible="{Binding IsDestinationNotValid}" Style="{StaticResource ErrorLabel}"/> <!-- no converter needed for isVisible-->
 
         <Label Text="What Kind of Trip is it?"
                Style="{StaticResource TourDetailTitleLabel}"

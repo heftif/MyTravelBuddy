@@ -2,13 +2,16 @@
 
 namespace MyTravelBuddy.ViewModels;
 
-public partial class BaseViewModel : ObservableObject
+public partial class BaseViewModel : ObservableValidator
 { 
 	[ObservableProperty]
 	[NotifyPropertyChangedFor(nameof(IsNotBusy))]
 	bool isBusy;
 
-	[ObservableProperty]
+    [ObservableProperty]
+    string error;
+
+    [ObservableProperty]
 	string title;
 
 	[ObservableProperty]
