@@ -2,6 +2,8 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using AsyncAwaitBestPractices;
+using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Maui.Storage;
 
 namespace MyTravelBuddy.ViewModels;
 
@@ -23,12 +25,22 @@ public partial class TourDetailsViewModel : DomainObjectViewModel, IQueryAttribu
     [ObservableProperty]
     TourType selectedTourType;
 
+    [ObservableProperty]
+    Byte[] tourImage;
+
 
     [NotifyDataErrorInfo]
     [Required(ErrorMessage = "Name is Required")]
-    [MaxLength(80, ErrorMessage ="Name is too long!")]
+    [MaxLength(15, ErrorMessage ="Name is too long!")]
     [ObservableProperty]
     string name;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsNameNotValid))]
+    bool isNameValid;
+
+    public bool IsNameNotValid => !IsNameValid;
+
 
     [NotifyDataErrorInfo]
     [Required(ErrorMessage = "Destination is Required")]
@@ -37,24 +49,34 @@ public partial class TourDetailsViewModel : DomainObjectViewModel, IQueryAttribu
     string generalLocation;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsDestinationNotValid))]
+    bool isDestinationValid;
+
+    public bool IsDestinationNotValid => !IsDestinationValid;
+
+    [ObservableProperty]
     DateTime startsOn;
 
     [ObservableProperty]
     DateTime endsOn;
 
 
-
     public ObservableCollection<Vehicle> VehiclesToAndFrom { get; } = new();
     public ObservableCollection<Vehicle> VehiclesAtLocation { get; } = new();
     public ObservableCollection<TourType> TourTypes { get; } = new();
 
-    
-    public TourDetailsViewModel()
+    ImageUploadService imageUploadService;
+
+
+    public TourDetailsViewModel(ImageUploadService service)
     {
         IsLoaded = false;
         IsInEditMode = false;
+        imageUploadService = service;
+
     }
 
+    //probably causes the loading issues in android
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         tourId = query["TourId"] as int?;
@@ -116,29 +138,23 @@ public partial class TourDetailsViewModel : DomainObjectViewModel, IQueryAttribu
         }
     }
 
-    //triggered when pressing back button
+
     [RelayCommand]
-    public async Task GoBackAsync()
+    public async Task UploadImageAsync()
     {
-        MapProperties();
+        if (imageUploadService != null)
+        {
+            var img = await imageUploadService.OpenMediaPickerAsync();
+            var imagefile = await imageUploadService.Upload(img);
 
-        //call save on baseviewmodel to ensure validation etc.
-        await SaveDomainObject(Tour);
+            //save to tour as byte array
+            Tour.Image = imageUploadService.StringToByteBase64(imagefile.byteBase64);
 
-        await Shell.Current.GoToAsync("..", true);
+            //display image in xaml
+            TourImage = imageUploadService.StringToByteBase64(imagefile.byteBase64);
+        }
     }
 
-    void MapProperties()
-    {
-        Tour.VehicleToAndFromId = SelectedVehicleToAndFrom.VehicleId;
-        Tour.VehicleAtLocationId = SelectedVehicleAtLocation.VehicleId;
-        Tour.TourTypeId = SelectedTourType.TourTypeId;
-
-        Tour.Name = Name;
-        Tour.GeneralLocation = GeneralLocation;
-        Tour.StartsOn = StartsOn;
-        Tour.EndsOn = EndsOn;
-    }
 
 
     async Task LoadProperties()
@@ -152,6 +168,7 @@ public partial class TourDetailsViewModel : DomainObjectViewModel, IQueryAttribu
         EndsOn = Tour.StartsOn;
 
         Title = Tour.Name;
+        TourImage = Tour.Image;
 
         //load the parameters for the view
         SelectedVehicleToAndFrom = VehiclesToAndFrom.Where(x => x.VehicleId == Tour.VehicleToAndFromId).FirstOrDefault();
@@ -182,6 +199,34 @@ public partial class TourDetailsViewModel : DomainObjectViewModel, IQueryAttribu
         IsDestinationValid = !(GetErrors().ToDictionary(k => k.MemberNames.First(), v => v.ErrorMessage) ?? new Dictionary<string, string?>()).TryGetValue(nameof(GeneralLocation), out var errorDestination);
 
         return !HasErrors;
+    }
+
+
+    //triggered when pressing back button
+    [RelayCommand]
+    public async Task GoBackAsync()
+    {
+        MapProperties();
+
+        //call save on baseviewmodel to ensure validation etc.
+        await SaveDomainObject(Tour);
+
+        WeakReferenceMessenger.Default.Send(new ReloadItemsMessage(true));
+
+        await Shell.Current.GoToAsync("..", true);
+    }
+
+    void MapProperties()
+    {
+        Tour.VehicleToAndFromId = SelectedVehicleToAndFrom.VehicleId;
+        Tour.VehicleAtLocationId = SelectedVehicleAtLocation.VehicleId;
+        Tour.TourTypeId = SelectedTourType.TourTypeId;
+
+        Tour.Name = Name;
+        Tour.GeneralLocation = GeneralLocation;
+        Tour.StartsOn = StartsOn;
+        Tour.EndsOn = EndsOn;
+        Tour.Image = TourImage;
     }
 }
 

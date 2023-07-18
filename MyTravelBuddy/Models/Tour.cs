@@ -24,6 +24,8 @@ public class Tour : IDomainObject
     public DateTime StartsOn { get; set; }
     public DateTime? EndsOn { get; set; }
 
+    public byte[] Image { get; set; }
+
     //public string StartsAt { get; set; }
     //public string EndsAt { get; set; }
 

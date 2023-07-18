@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using AsyncAwaitBestPractices;
 using CommunityToolkit.Maui.Views;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace MyTravelBuddy.ViewModels;
 
@@ -9,8 +10,13 @@ public partial class MainViewModel : BaseViewModel
 {
     public ObservableCollection<Tour> Tours { get; } = new();
 
+
     public MainViewModel()
-	{
+    {
+
+        //refreshing the view when we come back from details view
+        WeakReferenceMessenger.Default.Register<ReloadItemsMessage>(this, (r,m) => ReloadItems(r, m).SafeFireAndForget());
+
         //without package, fire and forget is a call for async void, which fires a task,
         //but does not wait for its result to return and proceeds with the code. Notorious for error handling
         //using the package should help with this and make it safer.
@@ -31,13 +37,30 @@ public partial class MainViewModel : BaseViewModel
         }
 	}
 
+
 	async Task LoadTours(IList<Tour> tours)
 	{
         foreach (var tour in tours)
             Tours.Add(tour);
 	}
 
-	[RelayCommand]
+
+    public async Task ReloadItems(object sender, ReloadItemsMessage msg)
+    {
+        Tours.Clear();
+
+        var tours = await App.DatabaseService.ListAll<Tour>();
+
+        var toursPlanned = tours.Count > 0;
+
+        if (toursPlanned)
+        {
+            await LoadTours(tours);
+        }
+    }
+
+
+    [RelayCommand]
 	public async Task CreateNewTourAsync()
 	{
 		if (IsBusy)
@@ -97,24 +120,30 @@ public partial class MainViewModel : BaseViewModel
         //var vehiclesAt = (Vehicle)await Shell.Current.ShowPopupAsync(new NewTourPopUpView("What it you mode of transport at the destination?", vehicles));
         var vehicleAt = vehicles.Where(x => x.Usage == TourUsage.BikeUsage).FirstOrDefault();
 
-        var tour = new Tour
+        if(string.IsNullOrEmpty(name) || string.IsNullOrEmpty(destination))
         {
-            Name = !string.IsNullOrEmpty(name) ? name : "",
-            GeneralLocation = !string.IsNullOrEmpty(destination) ? destination : "",
-            StartsOn = dates[0],
-            EndsOn = dates[1],
-            TourTypeId = tourType.TourTypeId,
-            VehicleToAndFromId = vehicleToAndFrom.VehicleId,
-            VehicleAtLocationId = vehicleAt.VehicleId,
-        };
+            App.AlertService.ShowAlert("Error", "Either no name or no destination entered, Tour could not be planned.");
+        }
+        else
+        {
+            var tour = new Tour
+            {
+                Name = !string.IsNullOrEmpty(name) ? name : "",
+                GeneralLocation = !string.IsNullOrEmpty(destination) ? destination : "",
+                StartsOn = dates[0],
+                EndsOn = dates[1],
+                TourTypeId = tourType.TourTypeId,
+                VehicleToAndFromId = vehicleToAndFrom.VehicleId,
+                VehicleAtLocationId = vehicleAt.VehicleId,
+            };
 
-        var tourId = await App.DatabaseService.SaveItemAsync(tour);
+            var tourId = await App.DatabaseService.SaveItemAsync(tour);
 
-        //need to reload the screen to show the images, but maybe the interface will do that for us
-        //with a observable object
-        tour.TourId = tourId;
+            tour.TourId = tourId;
 
-        Tours.Add(tour);
+            Tours.Add(tour);
+        }
+ 
     }
 }
 

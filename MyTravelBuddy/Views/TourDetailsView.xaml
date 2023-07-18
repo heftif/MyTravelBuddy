@@ -15,101 +15,187 @@
         <BackButtonBehavior Command="{Binding GoBackCommand}" />   
     </Shell.BackButtonBehavior>
 
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem >
+            <ToolbarItem.IconImageSource>
+                  <FileImageSource File="gear.png"/>
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+    </ContentPage.ToolbarItems>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+                <toolkit:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageSourceConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
+
     <ScrollView>
-    <VerticalStackLayout Padding="5">
+    <Grid>
 
-        <!-- Name -->
-        <Label Text="Name of the Trip"
-               Style="{StaticResource TourDetailTitleLabel}"/>
+        <!--<Image Source="{Binding TourImage, Mode=OneWay, Converter={StaticResource ByteArrayToImageSourceConverter}}"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Start"
+                       Aspect="Fill"
+                       HeightRequest="1100"
+                       Opacity="0.5"/>-->
+                
+        <VerticalStackLayout Padding="5">
 
-        <Entry Text="{Binding Name, Mode=TwoWay}"
-               IsSpellCheckEnabled="False"
-               IsTextPredictionEnabled="False"
-               HorizontalTextAlignment="Center"
-               Background="LightGray">
-            <Entry.Behaviors>
-                <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding ValidatePropertyCommand}"/>
-            </Entry.Behaviors>
-            <Entry.Triggers>
-                <DataTrigger TargetType ="Entry"
-                             Binding="{Binding IsNameValid}"
-                             Value="False"
-                             >
-                    <Setter Property="Background" Value="Red"/>
-                </DataTrigger>
-            </Entry.Triggers>
-         </Entry>
+            <Border HeightRequest="200" 
+                    HorizontalOptions="FillAndExpand"
+                    StrokeThickness="2"
+                    Stroke="Black"
+                    >
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="10,10,0,0"/>
+                </Border.StrokeShape>
+                <Grid> <!-- Workaround for clipping images in ios correctly, put it in a grid-->
+                    <Image Source="{Binding TourImage, Mode=OneWay, Converter={StaticResource ByteArrayToImageSourceConverter}}"
+                           HorizontalOptions="FillAndExpand"
+                           Aspect="AspectFill"/>
+                    <Label Text="{Binding Name}"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           Background="Transparent"
+                           FontSize="30"
+                           TextColor="White"/>
+                </Grid>
+            </Border>
 
-        <!-- error label-->
-        <Label Text="{Binding Error}" IsVisible="{Binding IsNameNotValid}" Style="{StaticResource ErrorLabel}"/> <!-- no converter needed for isVisible-->
+
+            <!-- Name -->
+            <Border Style="{StaticResource BorderWithShadow}">
+                <Label Text="Name of the Trip"
+                       Style="{StaticResource TourDetailTitleLabel}"
+                       />
+            </Border>
+
+            <Entry Text="{Binding Name, Mode=TwoWay}"
+                   Style="{StaticResource entryStyle}"
+                   >
+                <Entry.Behaviors>
+                    <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding ValidatePropertyCommand}"/>
+                </Entry.Behaviors>
+                <Entry.Triggers>
+                    <DataTrigger TargetType ="Entry"
+                                 Binding="{Binding IsNameValid}"
+                                 Value="False"
+                                 >
+                        <Setter Property="Background" Value="Red"/>
+                    </DataTrigger>
+                </Entry.Triggers>
+             </Entry>
+
+            <!-- error label-->
+            <Label Text="{Binding Error}" IsVisible="{Binding IsNameNotValid}" Style="{StaticResource ErrorLabel}"/> <!-- no converter needed for isVisible-->
 
 
-        <!-- Destination-->
-        <Label Text="Destination"
-               Style="{StaticResource TourDetailTitleLabel}"/>
+            <!-- Destination-->
+            <Border Style="{StaticResource BorderWithShadow}">
+                <Label Text="Destination"
+                       Style="{StaticResource TourDetailTitleLabel}"/>
+            </Border>
 
-        <Entry Text="{Binding GeneralLocation, Mode=TwoWay}"
-               IsSpellCheckEnabled="False"
-               IsTextPredictionEnabled="False"
-               HorizontalTextAlignment="Center"
-               Background="LightGray">
-            <Entry.Behaviors>
-                <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding ValidatePropertyCommand}"/>
-            </Entry.Behaviors>
-            <Entry.Triggers>
-                <DataTrigger TargetType ="Entry"
-                             Binding="{Binding IsDestinationValid}"
-                             Value="False"
-                             >
-                    <Setter Property="Background" Value="Red"/>
-                </DataTrigger>
-            </Entry.Triggers>
-         </Entry>
+            <Entry Text="{Binding GeneralLocation, Mode=TwoWay}"
+                   Style="{StaticResource entryStyle}">
+                <Entry.Behaviors>
+                    <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding ValidatePropertyCommand}"/>
+                </Entry.Behaviors>
+                <Entry.Triggers>
+                    <DataTrigger TargetType ="Entry"
+                                 Binding="{Binding IsDestinationValid}"
+                                 Value="False"
+                                 >
+                        <Setter Property="Background" Value="Red"/>
+                    </DataTrigger>
+                </Entry.Triggers>
+             </Entry>
 
-        <!-- error label-->
-        <Label Text="{Binding Error}" IsVisible="{Binding IsDestinationNotValid}" Style="{StaticResource ErrorLabel}"/> <!-- no converter needed for isVisible-->
+            <!-- error label-->
+            <Label Text="{Binding Error}" IsVisible="{Binding IsDestinationNotValid}" Style="{StaticResource ErrorLabel}"/> <!-- no converter needed for isVisible-->
 
-        <Label Text="What Kind of Trip is it?"
-               Style="{StaticResource TourDetailTitleLabel}"
-                />
+
+            <!-- StartsOn -->
+            <Border Style="{StaticResource BorderWithShadow}">
+                <Label Text="The Trip Starts On"
+                       Style="{StaticResource TourDetailTitleLabel}"/>
+            </Border>
+
+            <DatePicker x:Name="datePickerStart"
+                            Date="{Binding StartsOn}"
+                            DateSelected="datePickerStart_DateSelected"
+                            Style="{StaticResource datePickerStyle}"/>
+
+            <!-- EndsOn -->
+            <Border Style="{StaticResource BorderWithShadow}">
+                <Label Text="And Ends On"
+                       Style="{StaticResource TourDetailTitleLabel}"/>
+            </Border>
+
+            <DatePicker x:Name="datePickerEnd"
+                            Date="{Binding EndsOn}"
+                            DateSelected="datePickerEnd_DateSelected"
+                            Style="{StaticResource datePickerStyle}"
+                        />
+
+
+            <!-- TripType -->
+            <Border Style="{StaticResource BorderWithShadow}">
+                <Label Text="What Kind of Trip is it?"
+                       Style="{StaticResource TourDetailTitleLabel}"
+                        />
+            </Border>
          
-        <CarouselView ItemsSource="{Binding TourTypes}"
-                      CurrentItem="{Binding SelectedTourType}"
-                      PeekAreaInsets="100"
-                      Loop="True"
-                      MaximumHeightRequest="200"
-                      ItemTemplate="{StaticResource CarouselStyle}"> <!-- for showing adjacent items-->
-        </CarouselView>
+            <CarouselView ItemsSource="{Binding TourTypes}"
+                          CurrentItem="{Binding SelectedTourType}"
+                          PeekAreaInsets="100"
+                          Loop="True"
+                          MaximumHeightRequest="200"
+                          ItemTemplate="{StaticResource CarouselStyle}"> <!-- for showing adjacent items-->
+            </CarouselView>
 
 
-        <Label Text="Main Mode Of Transport to and from Location"
-               Style="{StaticResource TourDetailTitleLabel}"
-               />
+            <!-- Vehicle To and From Location -->
+            <Border Style="{StaticResource BorderWithShadow}">
+                <Label Text="Main Mode Of Transport to and from Location"
+                       Style="{StaticResource TourDetailTitleLabel}"
+                       />
+            </Border>
 
-        <CarouselView ItemsSource="{Binding VehiclesToAndFrom}"
-                      CurrentItem="{Binding SelectedVehicleToAndFrom}"
-                      PeekAreaInsets="100"
-                      Loop="True"
-                      MaximumHeightRequest="200"
-                      ItemTemplate="{StaticResource CarouselStyle}"> <!-- for showing adjacent items-->
-        </CarouselView>
+            <CarouselView ItemsSource="{Binding VehiclesToAndFrom}"
+                          CurrentItem="{Binding SelectedVehicleToAndFrom}"
+                          PeekAreaInsets="100"
+                         
+                          MaximumHeightRequest="200"
+                          ItemTemplate="{StaticResource CarouselStyle}"> <!-- for showing adjacent items-->
+            </CarouselView>
+
+            <!-- Vehicle at Location -->
+            <Border Style="{StaticResource BorderWithShadow}">
+                <Label Text="Main Mode Of Transport at Location"
+                       Style="{StaticResource TourDetailTitleLabel}"
+                        />
+            </Border>
+
+            <CarouselView ItemsSource="{Binding VehiclesAtLocation}"
+                          CurrentItem="{Binding SelectedVehicleAtLocation}"
+                          PeekAreaInsets="100"
+                          
+                          MaximumHeightRequest="200"
+                          ItemTemplate="{StaticResource CarouselStyle}"> <!-- for showing adjacent items-->
+            </CarouselView>
 
 
-        <Label Text="Main Mode Of Transport at Location"
-               Style="{StaticResource TourDetailTitleLabel}"
-                />
-
-        <CarouselView ItemsSource="{Binding VehiclesAtLocation}"
-                      CurrentItem="{Binding SelectedVehicleAtLocation}"
-                      PeekAreaInsets="100"
-                      Loop="True"
-                      MaximumHeightRequest="200"
-                      ItemTemplate="{StaticResource CarouselStyle}"> <!-- for showing adjacent items-->
-        </CarouselView>
+            <!-- Upload Image Option-->
+            <Button Text="Upload an Image"
+                    ToolTipProperties.Text="Add an image that represents your trip!"
+                    Command="{Binding UploadImageCommand}"
+                    HorizontalOptions="Center"/>
 
 
-
-         
-    </VerticalStackLayout>
+            </VerticalStackLayout>
+        </Grid>
      </ScrollView>
 </ContentPage>

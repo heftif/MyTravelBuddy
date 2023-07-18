@@ -18,15 +18,15 @@
 
             <DatePicker x:Name="datePickerStart"
                         DateSelected="datePickerStart_DateSelected"
-                        Format="dd.MM.yyyy"
-                        HorizontalOptions="Center"/>
+                        Style="{StaticResource datePickerStyle}"
+                        Background="Transparent"/>
 
             <Label Text="When will your trip end?" Style="{StaticResource MediumLabel}" Margin="0,15,0,0"/>
 
             <DatePicker x:Name="datePickerEnd"
                         DateSelected="datePickerEnd_DateSelected"
-                        Format="dd.MM.yyyy"
-                        HorizontalOptions="Center"/>
+                        Style="{StaticResource datePickerStyle}"
+                        Background="Transparent"/>
 
             <Button Text="Okay!" Clicked="Button_Clicked"/>
         </VerticalStackLayout>

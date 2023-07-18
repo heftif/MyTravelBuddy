@@ -8,7 +8,9 @@ public partial class MainPage : ContentPage
         // it is necessary to inject the vm and set it as binding context to
         // connect the view to the viewmodel!
         BindingContext = vm;
+ 
     }
+
 }
 
 

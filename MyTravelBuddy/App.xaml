@@ -107,19 +107,50 @@
                         </VerticalStackLayout>
             </DataTemplate>
 
+            <Shadow x:Key="overlayLabelShadow" Brush="Black"
+                    Offset="20,20"
+                    Radius="40"
+                    Opacity="1"/>
+
             <Style x:Key="MainOverlayLabel" TargetType="Label" BasedOn="{StaticResource LargeLabel}" >
                 <Setter Property="HorizontalTextAlignment" Value="Center"/>
                 <Setter Property="VerticalTextAlignment" Value="Center"/>
                 <Setter Property="TextColor" Value="Black"/>
                 <Setter Property="HorizontalOptions" Value="Center"/>
                 <Setter Property="VerticalOptions" Value="Center"/>
-                <Setter Property="BackgroundColor" Value="White"/>
-                <Setter Property="Shadow.Brush" Value="Black"/>
-                <Setter Property="Shadow.Offset" Value="20,20"/>
-                <Setter Property="Shadow.Radius" Value="40"/>
-                <Setter Property="Shadow.Opacity" Value="1"/> 
+                <Setter Property="BackgroundColor" Value="Transparent"/>
+                <Setter Property="Shadow" Value="{StaticResource overlayLabelShadow}"/>
             </Style>
 
+            <RoundRectangle x:Key="roundRectangle" CornerRadius="10"/>
+
+            <Shadow x:Key="borderDropShadow" Brush="Black"
+                    Offset="-3,2"
+                    Radius="5"
+                    Opacity="0.7"/>
+
+
+            <Style x:Key="BorderWithShadow" TargetType="Border">
+                <Setter Property="StrokeThickness" Value="3"/>
+                <Setter Property="HorizontalOptions" Value="Center"/>
+                <Setter Property="Background" Value="White"/>
+                <Setter Property="Shadow" Value="{StaticResource borderDropShadow}"/>
+                <Setter Property="StrokeShape" Value="{StaticResource roundRectangle}"/>
+                <Setter Property="Margin" Value="0,5,0,5"/>
+            </Style>
+
+            <Style x:Key="entryStyle" TargetType="Entry">
+                <Setter Property="IsSpellCheckEnabled" Value="False"/>  
+                <Setter Property="IsTextPredictionEnabled" Value="False"/>
+                <Setter Property="HorizontalTextAlignment" Value="Center"/>
+                <Setter Property="Background" Value="LightGray"/>
+            </Style>
+
+            <Style x:Key="datePickerStyle" TargetType="DatePicker">
+                <Setter Property="Format" Value="dd.MM.yyyy"/>
+                <Setter Property="HorizontalOptions" Value="Center"/>
+                <Setter Property="Background" Value="LightGray"/>
+            </Style>
 
         </ResourceDictionary>
     </Application.Resources>

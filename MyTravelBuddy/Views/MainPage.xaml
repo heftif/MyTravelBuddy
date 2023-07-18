@@ -4,12 +4,20 @@
              xmlns:model="clr-namespace:MyTravelBuddy.Models"
              xmlns:viewmodel="clr-namespace:MyTravelBuddy.ViewModels"
              x:Class="MyTravelBuddy.MainPage"
-             x:DataType="viewmodel:MainViewModel">
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:DataType="viewmodel:MainViewModel"
+             >
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+                <toolkit:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageSourceConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <ScrollView>
         <VerticalStackLayout
             Spacing="25"
-            Padding="30,0"
+            Padding="3"
             VerticalOptions="Start">
 
                 <!-- use grid to overlay text and image button-->
@@ -23,6 +31,7 @@
                                  IsEnabled = "{Binding IsNotBusy}"
                                  CornerRadius="20"
                                  BorderColor="Black"
+                                 BorderWidth="1"
                                  Aspect="Fill"
                                  Grid.Row="0"
                                  Command="{Binding CreateNewTourCommand}"
@@ -32,21 +41,23 @@
                         verticaltextalignment do-->
                     <Label Text="Plan new Trip"  Grid.Row="0" Style="{StaticResource MainOverlayLabel}"/>
                 </Grid>
+
                 <CollectionView ItemsSource="{Binding Tours}"
                                 SelectionMode="None"
                                 >
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="model:Tour">
-                            <Grid>
+                            <Grid Margin="0,0,0,5">
                                 <Grid.RowDefinitions>
                                     <RowDefinition />
                                 </Grid.RowDefinitions>
 
-                                <ImageButton Source="travel.png"
+                                <ImageButton Source="{Binding Image, Mode=OneWay, Converter={StaticResource ByteArrayToImageSourceConverter}, TargetNullValue='travel.png'}"
                                              HeightRequest="150"
                                              IsEnabled = "{Binding IsNotBusy, Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}}}"
                                              CornerRadius="20"
                                              BorderColor="Black"
+                                             BorderWidth="1"
                                              Aspect="Fill"
                                              Grid.Row="0"
                                              Command="{Binding OpenTourCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}}}"

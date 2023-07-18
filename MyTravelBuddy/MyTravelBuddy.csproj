@@ -91,6 +91,7 @@
 	  <None Remove="Resources\Images\citytrip.png" />
 	  <None Remove="Resources\Images\businesstrip.png" />
 	  <None Remove="Resources\Images\cruisetrip.png" />
+	  <None Remove="Resources\Images\gear.png" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Models\" />
@@ -122,5 +123,6 @@
 	  <BundleResource Include="Resources\Images\citytrip.png" />
 	  <BundleResource Include="Resources\Images\businesstrip.png" />
 	  <BundleResource Include="Resources\Images\cruisetrip.png" />
+	  <BundleResource Include="Resources\Images\gear.png" />
 	</ItemGroup>
 </Project>

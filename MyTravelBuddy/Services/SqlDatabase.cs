@@ -31,6 +31,7 @@ public class SqlDatabase : ISqlDatabase
         //await Database.DeleteAllAsync<Vehicle>();
         //await Database.DeleteAllAsync<TourType>();
 
+
         await CreateTables();
 
         initiated = true;

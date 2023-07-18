@@ -15,7 +15,7 @@ public static class MauiProgram
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-			});
+            });
 
 #if DEBUG
 		builder.Logging.AddDebug();
@@ -24,6 +24,7 @@ public static class MauiProgram
         //services
         builder.Services.AddSingleton<ISqlDatabase, SqlDatabase>();
 		builder.Services.AddSingleton <IAlertService, AlertService>();
+		builder.Services.AddSingleton<ImageUploadService>();
 
         //main pages (singleton means we create the page just once)
         builder.Services.AddSingleton<MainViewModel>();

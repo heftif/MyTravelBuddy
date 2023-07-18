@@ -21,8 +21,7 @@ public partial class BaseViewModel : ObservableValidator
 
 	public bool IsLoaded { get; set; }
 
-    public BaseViewModel()
-	{
-    }
+
+
 }
 
