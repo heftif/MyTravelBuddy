@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
+using Plugin.LocalNotification;
 
 namespace MyTravelBuddy;
 
@@ -11,6 +12,7 @@ public static class MauiProgram
 		builder
 			.UseMauiApp<App>()
 			.UseMauiCommunityToolkit()
+			.UseLocalNotification()
             .ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -25,6 +27,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<ISqlDatabase, SqlDatabase>();
 		builder.Services.AddSingleton <IAlertService, AlertService>();
 		builder.Services.AddSingleton<ImageUploadService>();
+		//builder.Services.AddSingleton<INotificationService>();
 
         //main pages (singleton means we create the page just once)
         builder.Services.AddSingleton<MainViewModel>();

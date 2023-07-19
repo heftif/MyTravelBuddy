@@ -58,6 +58,7 @@
 		<PackageReference Include="SQLiteNetExtensions.Async" Version="2.1.0" />
 		<PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.5" />
 		<PackageReference Include="CommunityToolkit.Maui" Version="5.2.0" />
+		<PackageReference Include="Plugin.LocalNotification" Version="10.1.8" />
 	</ItemGroup>
 
 	<ItemGroup>
