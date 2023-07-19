@@ -10,12 +10,15 @@ namespace MyTravelBuddy.ViewModels
 
 		}
 
-		protected async Task SaveDomainObject<T>(T item) where T : IDomainObject
+		protected async Task<bool> SaveDomainObject<T>(T item) where T : IDomainObject
 		{
 			if (Validate())
 			{
 				await App.DatabaseService.SaveItemAsync(item);
+				return true;
 			}
+
+			return false;
 		}
 
         public abstract bool Validate();

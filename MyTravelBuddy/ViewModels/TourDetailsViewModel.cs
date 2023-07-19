@@ -26,7 +26,7 @@ public partial class TourDetailsViewModel : DomainObjectViewModel, IQueryAttribu
     TourType selectedTourType;
 
     [ObservableProperty]
-    Byte[] tourImage;
+    byte[] tourImage;
 
 
     [NotifyDataErrorInfo]
@@ -74,41 +74,49 @@ public partial class TourDetailsViewModel : DomainObjectViewModel, IQueryAttribu
         IsInEditMode = false;
         imageUploadService = service;
 
+        //due to issues with carouselview, the work around of using a message when view is loaded and making it async was necessary!
+        WeakReferenceMessenger.Default.Register<SetSelectedItemMessage>(this, (r,m) => SetSelectedItems(r,m).SafeFireAndForget());
     }
 
     //probably causes the loading issues in android
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        tourId = query["TourId"] as int?;
+        Tour = query["Tour"] as Tour;
 
-        if (!IsLoaded)
-        {
-            LoadAsync().SafeFireAndForget();
-        }
-    }
+        tourId = Tour.TourId;
 
-    async Task LoadAsync()
-    {
         //load necessary objects
-        var vehicles = await App.DatabaseService.ListAll<Vehicle>();
+        var vehiclesAt = query["VehiclesAt"] as List<Vehicle>;
 
-        foreach (var vehicle in vehicles)
-            VehiclesToAndFrom.Add(vehicle);
-
-        var vehicles2 = await App.DatabaseService.ListAll<Vehicle>();
-
-        foreach (var vehicle in vehicles2)
+        foreach (var vehicle in vehiclesAt)
             VehiclesAtLocation.Add(vehicle);
 
-        var tourTypes = await App.DatabaseService.ListAll<TourType>();
+        var vehiclesToAndFrom = query["VehiclesToAndFrom"] as List<Vehicle>;
+
+        foreach (var vehicle in vehiclesToAndFrom)
+            VehiclesToAndFrom.Add(vehicle);
+
+
+        var tourTypes = query["TourTypes"] as List<TourType>;
 
         foreach (var tourType in tourTypes)
             TourTypes.Add(tourType);
 
 
+        if (!IsLoaded)
+        {
+            //handle all async loading calls in the vm before and hand it over, so loading can
+            //be sync to avoid stutters when loading an ensure proper binding
+            Load();
+        }
+    }
+
+    void Load()
+    {
+
         if (tourId.HasValue && tourId > 0)
         {
-            await LoadProperties();
+            LoadProperties();
         }
         else
         {
@@ -120,10 +128,71 @@ public partial class TourDetailsViewModel : DomainObjectViewModel, IQueryAttribu
 
     }
 
+    void LoadProperties()
+    {
+        //get object
+        GeneralLocation = Tour.GeneralLocation;
+        Name = Tour.Name;
+        StartsOn = Tour.StartsOn;
+        EndsOn = Tour.StartsOn;
+
+        Title = Tour.Name;
+        TourImage = Tour.Image;
+
+        // so all errors etc are set correctly
+        Validate();
+    }
+
+    async Task SetSelectedItems(object sender, SetSelectedItemMessage msg)
+    {
+        //necessary for workaround for issues with carouselview!
+        //currently, scrolling to the given item does not yet work for android!
+        //https://github.com/dotnet/maui/issues/7575
+        await Task.Delay(500).ConfigureAwait(true);
+
+        if (msg.Value == "TourType")
+        {
+            SelectedTourType = TourTypes.Where(x => x.TourTypeId == Tour.TourTypeId).FirstOrDefault();
+        }
+        else if (msg.Value == "VehicleToAndFrom")
+        {
+            SelectedVehicleToAndFrom = VehiclesToAndFrom.Where(x => x.VehicleId == Tour.VehicleToAndFromId).FirstOrDefault();
+        }
+        else if (msg.Value == "VehicleAt")
+        {
+            SelectedVehicleAtLocation = VehiclesAtLocation.Where(x => x.VehicleId == Tour.VehicleAtLocationId).FirstOrDefault();
+        }
+    }
+
+
+    [RelayCommand]
+    public void ValidateProperty()
+    {
+        Validate();
+    }
+
+    public override bool Validate()
+    {
+        ValidateAllProperties();
+
+        if (HasErrors)
+            Error = string.Join(Environment.NewLine, GetErrors().Select(e => e.ErrorMessage));
+        else
+            Error = String.Empty;
+
+        IsNameValid = !(GetErrors().ToDictionary(k => k.MemberNames.First(), v => v.ErrorMessage) ?? new Dictionary<string, string?>()).TryGetValue(nameof(Name), out var errorName);
+        IsDestinationValid = !(GetErrors().ToDictionary(k => k.MemberNames.First(), v => v.ErrorMessage) ?? new Dictionary<string, string?>()).TryGetValue(nameof(GeneralLocation), out var errorDestination);
+
+        return !HasErrors;
+    }
+
 
     partial void OnSelectedTourTypeChanged(TourType value)
     {
-        if (IsLoaded)
+        if (value == null)
+            return;
+
+        /*if (IsLoaded)
         {
             if (value.IsHike())
                 SelectedVehicleAtLocation = VehiclesAtLocation.Where(x => x.Usage == TourUsage.WalkUsage).FirstOrDefault();
@@ -135,7 +204,7 @@ public partial class TourDetailsViewModel : DomainObjectViewModel, IQueryAttribu
                 SelectedVehicleAtLocation = VehiclesAtLocation.Where(x => x.Usage == TourUsage.WalkUsage).FirstOrDefault();
             else if (value.IsCruise())
                 SelectedVehicleAtLocation = VehiclesAtLocation.Where(x => x.Usage == TourUsage.BoatUsage).FirstOrDefault();
-        }
+        }*/
     }
 
 
@@ -155,50 +224,13 @@ public partial class TourDetailsViewModel : DomainObjectViewModel, IQueryAttribu
         }
     }
 
-
-
-    async Task LoadProperties()
-    {
-        //get object
-        Tour = await App.DatabaseService.GetObject<Tour>(tourId.Value);
-
-        GeneralLocation = Tour.GeneralLocation;
-        Name = Tour.Name;
-        StartsOn = Tour.StartsOn;
-        EndsOn = Tour.StartsOn;
-
-        Title = Tour.Name;
-        TourImage = Tour.Image;
-
-        //load the parameters for the view
-        SelectedVehicleToAndFrom = VehiclesToAndFrom.Where(x => x.VehicleId == Tour.VehicleToAndFromId).FirstOrDefault();
-        SelectedVehicleAtLocation = VehiclesAtLocation.Where(x => x.VehicleId == Tour.VehicleAtLocationId).FirstOrDefault();
-        SelectedTourType = TourTypes.Where(x => x.TourTypeId == Tour.TourTypeId).FirstOrDefault();
-
-        // so all errors etc are set correctly
-        Validate();
-    }
-
-
     [RelayCommand]
-    public void ValidateProperty()
+    public async Task GoToSettingsAsync()
     {
-        Validate();
-    }
+        await Shell.Current.GoToAsync(nameof(SettingsPage), true, new Dictionary<string, object>
+        {
 
-    public override bool Validate()
-     {
-        ValidateAllProperties();
-
-        if (HasErrors)
-            Error = string.Join(Environment.NewLine, GetErrors().Select(e => e.ErrorMessage));
-        else
-            Error = String.Empty;
-
-        IsNameValid = !(GetErrors().ToDictionary(k => k.MemberNames.First(), v => v.ErrorMessage) ?? new Dictionary<string, string?>()).TryGetValue(nameof(Name), out var errorName);
-        IsDestinationValid = !(GetErrors().ToDictionary(k => k.MemberNames.First(), v => v.ErrorMessage) ?? new Dictionary<string, string?>()).TryGetValue(nameof(GeneralLocation), out var errorDestination);
-
-        return !HasErrors;
+        });
     }
 
 
@@ -209,11 +241,14 @@ public partial class TourDetailsViewModel : DomainObjectViewModel, IQueryAttribu
         MapProperties();
 
         //call save on baseviewmodel to ensure validation etc.
-        await SaveDomainObject(Tour);
+        var success = await SaveDomainObject(Tour);
 
-        WeakReferenceMessenger.Default.Send(new ReloadItemsMessage(true));
+        if (success)
+        {
+            WeakReferenceMessenger.Default.Send(new ReloadItemMessage(Tour));
 
-        await Shell.Current.GoToAsync("..", true);
+            await Shell.Current.GoToAsync("..", true);
+        }
     }
 
     void MapProperties()

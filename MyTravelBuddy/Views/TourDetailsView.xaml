@@ -17,7 +17,7 @@
 
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem >
+        <ToolbarItem Command="{Binding GoToSettingsCommand}">
             <ToolbarItem.IconImageSource>
                   <FileImageSource File="gear.png"/>
             </ToolbarItem.IconImageSource>
@@ -59,7 +59,7 @@
                            HorizontalOptions="Center"
                            VerticalOptions="Center"
                            Background="Transparent"
-                           FontSize="30"
+                           FontSize="26"
                            TextColor="White"/>
                 </Grid>
             </Border>
@@ -148,10 +148,12 @@
                         />
             </Border>
          
-            <CarouselView ItemsSource="{Binding TourTypes}"
+            <CarouselView x:Name="tourTypeCarousel"
+                          ItemsSource="{Binding TourTypes}"
                           CurrentItem="{Binding SelectedTourType}"
+                          Loaded="TourTypeCarouselView_Loaded"
                           PeekAreaInsets="100"
-                          Loop="True"
+                          Loop="False"
                           MaximumHeightRequest="200"
                           ItemTemplate="{StaticResource CarouselStyle}"> <!-- for showing adjacent items-->
             </CarouselView>
@@ -166,10 +168,12 @@
 
             <CarouselView ItemsSource="{Binding VehiclesToAndFrom}"
                           CurrentItem="{Binding SelectedVehicleToAndFrom}"
+                          Loaded="VehicleToAndFromCarouselView_Loaded"
                           PeekAreaInsets="100"
-                         
+                          Loop="False"
                           MaximumHeightRequest="200"
-                          ItemTemplate="{StaticResource CarouselStyle}"> <!-- for showing adjacent items-->
+                          ItemTemplate="{StaticResource CarouselStyle}"
+                          IsScrollAnimated="True"> <!-- for showing adjacent items-->
             </CarouselView>
 
             <!-- Vehicle at Location -->
@@ -181,10 +185,12 @@
 
             <CarouselView ItemsSource="{Binding VehiclesAtLocation}"
                           CurrentItem="{Binding SelectedVehicleAtLocation}"
+                          Loaded="VehicleAtCarouselView_Loaded"
                           PeekAreaInsets="100"
-                          
+                          Loop="False"
                           MaximumHeightRequest="200"
-                          ItemTemplate="{StaticResource CarouselStyle}"> <!-- for showing adjacent items-->
+                          ItemTemplate="{StaticResource CarouselStyle}"
+                          IsScrollAnimated="True"> <!-- for showing adjacent items-->
             </CarouselView>
 
 

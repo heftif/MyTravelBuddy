@@ -15,7 +15,7 @@ public partial class MainViewModel : BaseViewModel
     {
 
         //refreshing the view when we come back from details view
-        WeakReferenceMessenger.Default.Register<ReloadItemsMessage>(this, (r,m) => ReloadItems(r, m).SafeFireAndForget());
+        WeakReferenceMessenger.Default.Register<ReloadItemMessage>(this, ReloadItem);
 
         //without package, fire and forget is a call for async void, which fires a task,
         //but does not wait for its result to return and proceeds with the code. Notorious for error handling
@@ -33,30 +33,24 @@ public partial class MainViewModel : BaseViewModel
 
 		if(toursPlanned)
 		{
-			await LoadTours(tours);
+			LoadTours(tours);
         }
+        
 	}
 
 
-	async Task LoadTours(IList<Tour> tours)
+	void LoadTours(IList<Tour> tours)
 	{
         foreach (var tour in tours)
             Tours.Add(tour);
 	}
 
-
-    public async Task ReloadItems(object sender, ReloadItemsMessage msg)
+    //call must be sync, else it does not work properly for android
+    public void ReloadItem(object sender, ReloadItemMessage msg)
     {
-        Tours.Clear();
+        Tours.Remove(msg.Value);
 
-        var tours = await App.DatabaseService.ListAll<Tour>();
-
-        var toursPlanned = tours.Count > 0;
-
-        if (toursPlanned)
-        {
-            await LoadTours(tours);
-        }
+        Tours.Insert(0, msg.Value);
     }
 
 
@@ -79,10 +73,18 @@ public partial class MainViewModel : BaseViewModel
         if (tour.TourId == 0)
             return;
 
+        var vehiclesToAndFrom = await App.DatabaseService.ListAll<Vehicle>();
+        var vehiclesAt = await App.DatabaseService.ListAll<Vehicle>();
+        var tourTypes = await App.DatabaseService.ListAll<TourType>();
 
+        //it is necessary to hand over the vehicles and tourtypes to ensure correct loading of details
+        //since async loading otherwise causes delays and stutters. 
         await Shell.Current.GoToAsync(nameof(TourDetailsView), true, new Dictionary<string, object>
         {
-            {"TourId", tour.TourId}
+            {"Tour", tour},
+            {"VehiclesToAndFrom", vehiclesToAndFrom},
+            {"VehiclesAt", vehiclesAt},
+            {"TourTypes", tourTypes}
         });
 
     }
