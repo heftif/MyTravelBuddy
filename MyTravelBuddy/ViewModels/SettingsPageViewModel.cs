@@ -1,10 +1,21 @@
 ﻿using System;
 namespace MyTravelBuddy.ViewModels;
 
-public class SettingsPageViewModel : BaseViewModel
+public partial class SettingsPageViewModel : BaseViewModel
 {
-	public SettingsPageViewModel()
+	[ObservableProperty]
+	bool pushNotificationsEnabled;
+
+    [ObservableProperty]
+    bool remindersEnabled;
+
+    public SettingsPageViewModel()
 	{
 	}
+
+    partial void OnPushNotificationsEnabledChanged(bool value)
+    {
+        
+    }
 }
 
