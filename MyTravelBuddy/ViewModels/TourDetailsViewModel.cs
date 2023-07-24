@@ -227,9 +227,20 @@ public partial class TourDetailsViewModel : DomainObjectViewModel, IQueryAttribu
     [RelayCommand]
     public async Task GoToSettingsAsync()
     {
+        //maybe save tour before leaving the site?
+        //not really necessary, as long as I make sure you can leave the site only with also triggering the back
+        //button action
+
+        //should be made with a specific call to the database, instead of getting all push settings
+        var allPushSettings = await App.DatabaseService.ListAll<PushSetting>();
+
+        var currentPushSetting = allPushSettings.Where(x => x.TourId == tourId.Value).FirstOrDefault();
+
+
         await Shell.Current.GoToAsync(nameof(SettingsPage), true, new Dictionary<string, object>
         {
-
+            {"Tour", Tour},
+            {"PushSetting", currentPushSetting }
         });
     }
 

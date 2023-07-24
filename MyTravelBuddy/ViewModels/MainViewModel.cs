@@ -3,6 +3,8 @@ using System.Collections.ObjectModel;
 using AsyncAwaitBestPractices;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Messaging;
+using Plugin.LocalNotification;
+using Plugin.LocalNotification.EventArgs;
 
 namespace MyTravelBuddy.ViewModels;
 
@@ -10,9 +12,13 @@ public partial class MainViewModel : BaseViewModel
 {
     public ObservableCollection<Tour> Tours { get; } = new();
 
+    INotificationService notificationService;
 
-    public MainViewModel()
+    public MainViewModel(INotificationService notificationService)
     {
+        this.notificationService = notificationService;
+        this.notificationService.NotificationReceived += NotificationService_NotificationReceived;
+        this.notificationService.NotificationActionTapped += NotificationService_NotificationActionTapped;
 
         //refreshing the view when we come back from details view
         WeakReferenceMessenger.Default.Register<ReloadItemMessage>(this, ReloadItem);
@@ -24,7 +30,8 @@ public partial class MainViewModel : BaseViewModel
         LoadAsync().SafeFireAndForget(onException: ex => App.AlertService.ShowAlertAsync("Error Loading Main", ex.ToString()));
     }
 
-	async Task LoadAsync()
+
+    async Task LoadAsync()
 	{
         // first call to database also initialises the database
 		var tours = await App.DatabaseService.ListAll<Tour>();
@@ -147,5 +154,21 @@ public partial class MainViewModel : BaseViewModel
         }
  
     }
+
+    #region Notifications
+
+    //fires for iOS only if app is open - fires as soon as the notification is received by the phone
+    private void NotificationService_NotificationReceived(NotificationEventArgs e)
+    {
+
+    }
+
+    //fires as soon as the notification is tapped by the user
+    private void NotificationService_NotificationActionTapped(NotificationEventArgs e)
+    {
+
+    }
+
+    #endregion
 }
 

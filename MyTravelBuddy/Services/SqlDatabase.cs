@@ -45,6 +45,7 @@ public class SqlDatabase : ISqlDatabase
         {
 
             await Database.CreateTableAsync<Tour>();
+            await Database.CreateTableAsync<PushSetting>();
 
             //creates a table with the schema of the given object
             var res1 = await Database.CreateTableAsync<Vehicle>();
@@ -72,7 +73,7 @@ public class SqlDatabase : ISqlDatabase
                 await SaveItemAsync(new TourType { Text = "City Trip", ImagePath = "citytrip.png", Usage = TourUsage.CityTripUsage });
                 await SaveItemAsync(new TourType { Text = "Business Trip", ImagePath = "businesstrip.png", Usage = TourUsage.BusinessTripUsage });
                 await SaveItemAsync(new TourType { Text = "Cruise", ImagePath = "cruisetrip.png", Usage = TourUsage.CruiseUsage });
-            }
+            } 
 
         }
         catch(Exception e)
