@@ -166,7 +166,36 @@ public partial class MainViewModel : BaseViewModel
     //fires as soon as the notification is tapped by the user
     private void NotificationService_NotificationActionTapped(NotificationEventArgs e)
     {
+        NagivateToPlanningView(e.Request.NotificationId).SafeFireAndForget();
+    }
 
+    async Task NagivateToPlanningView(int notificationId)
+    {
+        IsBusy = true;
+
+        //get tour from NotificationId
+        var tourIdString = notificationId.ToString();
+        int? tourId = Int32.Parse(tourIdString.Substring(1, tourIdString.Length - 1));
+
+        if (tourId.HasValue)
+        {
+            //go to the planningviewmodel
+            var tour = await App.DatabaseService.GetObject<Tour>(tourId.Value);
+
+            await Shell.Current.GoToAsync(nameof(PlanningView), true, new Dictionary<string, object>
+            {
+                {"Tour", tour},
+            });
+        }
+        else
+        {
+            await Shell.Current.GoToAsync(nameof(MainPage), true, new Dictionary<string, object>
+            {
+
+            });
+        }
+
+        IsBusy = false;
     }
 
     #endregion

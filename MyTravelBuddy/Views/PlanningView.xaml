@@ -9,9 +9,11 @@
         <VerticalStackLayout Padding="5">
 
             <!-- Top Navigation Menu-->
-            <HorizontalStackLayout RadioButtonGroup.GroupName="MenuCategories"
+            <HorizontalStackLayout
+                                    RadioButtonGroup.GroupName="MenuCategories"
                                    RadioButtonGroup.SelectedValue="{Binding SelectedMenuItem, Mode=TwoWay}"
-                                   BindableLayout.ItemsSource="{Binding MenuPoints}">
+                                   BindableLayout.ItemsSource="{Binding MenuPoints}"
+                                   HorizontalOptions="Center">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
                            <RadioButton Content="{Binding .}" Margin="0,0,15,0"

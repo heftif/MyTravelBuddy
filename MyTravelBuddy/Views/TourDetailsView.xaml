@@ -34,20 +34,15 @@
 
     <ScrollView>
     <Grid>
-
-        <!--<Image Source="{Binding TourImage, Mode=OneWay, Converter={StaticResource ByteArrayToImageSourceConverter}}"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Start"
-                       Aspect="Fill"
-                       HeightRequest="1100"
-                       Opacity="0.5"/>-->
                 
         <VerticalStackLayout Padding="5">
 
             <!-- Top Navigation Menu-->
-            <HorizontalStackLayout RadioButtonGroup.GroupName="MenuCategories"
+            <HorizontalStackLayout x:Name="TopNavigationMenu"
+                                    RadioButtonGroup.GroupName="MenuCategories"
                                    RadioButtonGroup.SelectedValue="{Binding SelectedMenuItem, Mode=TwoWay}"
-                                   BindableLayout.ItemsSource="{Binding MenuPoints}">
+                                   BindableLayout.ItemsSource="{Binding MenuPoints}"
+                                   HorizontalOptions="Center">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
                            <RadioButton Content="{Binding .}" Margin="0,0,15,0"

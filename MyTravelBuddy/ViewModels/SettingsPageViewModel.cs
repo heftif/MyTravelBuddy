@@ -118,7 +118,9 @@ public partial class SettingsPageViewModel : DomainObjectViewModel, IQueryAttrib
                 await Shell.Current.GoToAsync("..", true);
             }
         }
-        
+
+        await Shell.Current.GoToAsync("..", true);
+
     }
 
     async Task SetupNotifications()

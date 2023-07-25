@@ -114,6 +114,20 @@
                                         </Grid>
             </ControlTemplate>
 
+             <HorizontalStackLayout x:Key="TopNavigationMenu"
+                                    RadioButtonGroup.GroupName="MenuCategories"
+                                   RadioButtonGroup.SelectedValue="{Binding SelectedMenuItem, Mode=TwoWay}"
+                                   BindableLayout.ItemsSource="{Binding MenuPoints}"
+                                   HorizontalOptions="Center">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                           <RadioButton Content="{Binding .}" Margin="0,0,15,0"
+                                        Value="{Binding .}"
+                                        ControlTemplate="{StaticResource RadioButtonMenuStyle}" />
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+             </HorizontalStackLayout>
+
 
             <DataTemplate x:Key="CarouselStyle">
                         <VerticalStackLayout>

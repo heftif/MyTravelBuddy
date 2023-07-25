@@ -79,33 +79,33 @@ public partial class TourDetailsViewModel : TourDetailsCollectionBase, IQueryAtt
     //probably causes the loading issues in android
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        Tour = query["Tour"] as Tour;
-
-        tourId = Tour.TourId;
-
-        //load necessary objects
-        var vehiclesAt = query["VehiclesAt"] as List<Vehicle>;
-
-        foreach (var vehicle in vehiclesAt)
-            VehiclesAtLocation.Add(vehicle);
-
-        var vehiclesToAndFrom = query["VehiclesToAndFrom"] as List<Vehicle>;
-
-        foreach (var vehicle in vehiclesToAndFrom)
-            VehiclesToAndFrom.Add(vehicle);
-
-
-        var tourTypes = query["TourTypes"] as List<TourType>;
-
-        foreach (var tourType in tourTypes)
-            TourTypes.Add(tourType);
-
-
         if (!IsLoaded)
         {
+            Tour = query["Tour"] as Tour;
+
+            tourId = Tour.TourId;
+
+            //load necessary objects
+            var vehiclesAt = query["VehiclesAt"] as List<Vehicle>;
+
+            foreach (var vehicle in vehiclesAt)
+                VehiclesAtLocation.Add(vehicle);
+
+            var vehiclesToAndFrom = query["VehiclesToAndFrom"] as List<Vehicle>;
+
+            foreach (var vehicle in vehiclesToAndFrom)
+                VehiclesToAndFrom.Add(vehicle);
+
+
+            var tourTypes = query["TourTypes"] as List<TourType>;
+
+            foreach (var tourType in tourTypes)
+                TourTypes.Add(tourType);
+
             //handle all async loading calls in the vm before and hand it over, so loading can
             //be sync to avoid stutters when loading an ensure proper binding
             Load();
+
         }
     }
 
@@ -114,7 +114,7 @@ public partial class TourDetailsViewModel : TourDetailsCollectionBase, IQueryAtt
 
         if (tourId.HasValue && tourId > 0)
         {
-            LoadProperties();
+            LoadProperties().SafeFireAndForget();
         }
         else
         {
@@ -126,7 +126,7 @@ public partial class TourDetailsViewModel : TourDetailsCollectionBase, IQueryAtt
 
     }
 
-    void LoadProperties()
+    async Task LoadProperties()
     {
         //get object
         GeneralLocation = Tour.GeneralLocation;
