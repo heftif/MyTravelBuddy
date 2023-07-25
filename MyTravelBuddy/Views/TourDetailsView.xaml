@@ -2,9 +2,9 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MyTravelBuddy.Views.TourDetailsView"
+             x:DataType="viewmodel:TourDetailsViewModel"
              xmlns:viewmodel="clr-namespace:MyTravelBuddy.ViewModels"
              xmlns:model="clr-namespace:MyTravelBuddy.Models"
-             x:DataType="viewmodel:TourDetailsViewModel"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
              ios:Page.UseSafeArea="True"
@@ -29,7 +29,8 @@
                 <toolkit:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageSourceConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
-    
+
+
 
     <ScrollView>
     <Grid>
@@ -42,6 +43,19 @@
                        Opacity="0.5"/>-->
                 
         <VerticalStackLayout Padding="5">
+
+            <!-- Top Navigation Menu-->
+            <HorizontalStackLayout RadioButtonGroup.GroupName="MenuCategories"
+                                   RadioButtonGroup.SelectedValue="{Binding SelectedMenuItem, Mode=TwoWay}"
+                                   BindableLayout.ItemsSource="{Binding MenuPoints}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                           <RadioButton Content="{Binding .}" Margin="0,0,15,0"
+                                        Value="{Binding .}"
+                                        ControlTemplate="{StaticResource RadioButtonMenuStyle}" />
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+             </HorizontalStackLayout>
 
             <Border HeightRequest="200" 
                     HorizontalOptions="FillAndExpand"

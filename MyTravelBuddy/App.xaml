@@ -76,6 +76,44 @@
                 <Setter Property="HorizontalOptions" Value="CenterAndExpand"/>
             </Style>
 
+            <ControlTemplate x:Key="RadioButtonMenuStyle">
+                                        <Grid RowDefinitions="30,4">
+                                            <VisualStateManager.VisualStateGroups>
+                                                <VisualStateGroupList>
+                                                    <VisualStateGroup x:Name="CheckedStates">
+                                                        <VisualState x:Name="Checked">
+                                                            <VisualState.Setters>
+                                                                <Setter
+                                                                    TargetName="TextLabel"
+                                                                    Property="Label.TextColor"
+                                                                    Value="{StaticResource Primary}"/>
+                                                                <Setter
+                                                                    TargetName="Indicator"
+                                                                    Property="BoxView.Color"
+                                                                    Value="{StaticResource Primary}"/>
+                                                            </VisualState.Setters>
+                                                        </VisualState>
+
+                                                        <VisualState x:Name="Unchecked">
+                                                            <VisualState.Setters>
+                                                                <Setter
+                                                                    TargetName="TextLabel"
+                                                                    Property="Label.TextColor"
+                                                                    Value="Black"/>
+                                                                <Setter
+                                                                    TargetName="Indicator"
+                                                                    Property="BoxView.Color"
+                                                                    Value="Transparent"/>
+                                                            </VisualState.Setters>
+                                                        </VisualState>
+                                                    </VisualStateGroup>
+                                                </VisualStateGroupList>
+                                            </VisualStateManager.VisualStateGroups>
+                                            <Label Text="{TemplateBinding Content}" x:Name="TextLabel" />
+                                            <BoxView x:Name="Indicator" Grid.Row="1" Color="Transparent"/>
+                                        </Grid>
+            </ControlTemplate>
+
 
             <DataTemplate x:Key="CarouselStyle">
                         <VerticalStackLayout>

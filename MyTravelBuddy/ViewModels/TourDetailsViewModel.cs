@@ -7,11 +7,8 @@ using Microsoft.Maui.Storage;
 
 namespace MyTravelBuddy.ViewModels;
 
-public partial class TourDetailsViewModel : DomainObjectViewModel, IQueryAttributable
+public partial class TourDetailsViewModel : TourDetailsCollectionBase, IQueryAttributable
 {
-    private int? tourId;
-
-    public Tour Tour;
 
     [ObservableProperty]
     bool isInEditMode;
@@ -60,11 +57,10 @@ public partial class TourDetailsViewModel : DomainObjectViewModel, IQueryAttribu
     [ObservableProperty]
     DateTime endsOn;
 
-
     public ObservableCollection<Vehicle> VehiclesToAndFrom { get; } = new();
     public ObservableCollection<Vehicle> VehiclesAtLocation { get; } = new();
     public ObservableCollection<TourType> TourTypes { get; } = new();
-
+    
     ImageUploadService imageUploadService;
 
 
@@ -74,6 +70,8 @@ public partial class TourDetailsViewModel : DomainObjectViewModel, IQueryAttribu
         IsInEditMode = false;
         imageUploadService = service;
 
+
+        SelectedMenuItem = "Overview";
         //due to issues with carouselview, the work around of using a message when view is loaded and making it async was necessary!
         WeakReferenceMessenger.Default.Register<SetSelectedItemMessage>(this, (r,m) => SetSelectedItems(r,m).SafeFireAndForget());
     }
@@ -274,5 +272,7 @@ public partial class TourDetailsViewModel : DomainObjectViewModel, IQueryAttribu
         Tour.EndsOn = EndsOn;
         Tour.Image = TourImage;
     }
+
+
 }
 
