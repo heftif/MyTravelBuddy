@@ -30,15 +30,52 @@
              </HorizontalStackLayout>
 
             <CollectionView ItemsSource="{Binding PlanningItems}"
-                                SelectionMode="None"
-                                >
+                                SelectionMode="None">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical" ItemSpacing="5"/>
+                    </CollectionView.ItemsLayout>
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="model:PlanningItem">
-                            <Label Text="{Binding Name}" />
+                            <Border Padding="2"
+                                    StrokeThickness="2"
+                                    >
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10"/>
+                                </Border.StrokeShape>
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border"
+                                                 Binding="{Binding IsOverdue}"
+                                                 Value="True">
+                                        <Setter Property="Background" Value="Red"/>
+                                        <Setter Property="Stroke" Value="Red"/>
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="3*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition Height="50"/>
+                                    </Grid.RowDefinitions>
+
+                                    <Label Grid.Row="0" Grid.Column="0"
+                                            Text="{Binding Name}"
+                                           Style="{StaticResource MediumLabel}"/>
+                                    <Label Grid.Row="1" Grid.Column="0"
+                                           Text="{Binding Description}"
+                                           Style="{StaticResource MicroLabel}"
+                                           Margin="3,0,0,0"/>
+                                    <CheckBox Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"
+                                              VerticalOptions="Start"
+                                              HorizontalOptions="Center"
+                                              IsChecked="{Binding IsDone}"/>
+                                </Grid>
+                            </Border>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
             </CollectionView>
-
          </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

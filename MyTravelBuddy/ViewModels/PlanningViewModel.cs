@@ -27,6 +27,8 @@ public partial class PlanningViewModel : TourDetailsCollectionBase, IQueryAttrib
             //load necessary objects
             var planningItems = query["PlanningItems"] as List<PlanningItem>;
 
+            //todo set the duedates for all these planning items!
+
             foreach (var item in planningItems)
                 PlanningItems.Add(item);
         }

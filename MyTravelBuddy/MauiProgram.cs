@@ -31,7 +31,10 @@ public static class MauiProgram
 		builder.Services.AddSingleton <IAlertService, AlertService>();
         builder.Services.AddSingleton<IShellNavigationService, ShellNavigationService>();
         builder.Services.AddSingleton<ImageUploadService>();
-		//builder.Services.AddSingleton<INotificationService>();
+
+#if MACCATALYST || NETCOREAPP
+        builder.Services.AddSingleton<Services.INotificationService, Services.NotificationService>();
+#endif
 
         //main pages (singleton means we create the page just once)
         builder.Services.AddSingleton<MainViewModel>();

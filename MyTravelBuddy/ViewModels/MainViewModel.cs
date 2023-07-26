@@ -12,12 +12,16 @@ public partial class MainViewModel : BaseViewModel
 {
     public ObservableCollection<Tour> Tours { get; } = new();
 
-    INotificationService notificationService;
+#if ANDROID || IOS
+    Plugin.LocalNotification.INotificationService notificationService;
+#else
+    Services.INotificationService notificationService;
+#endif
 
-    public MainViewModel(INotificationService notificationService)
+#if ANDROID || IOS
+    public MainViewModel(Plugin.LocalNotification.INotificationService notificationService)
     {
         this.notificationService = notificationService;
-        this.notificationService.NotificationReceived += NotificationService_NotificationReceived;
         this.notificationService.NotificationActionTapped += NotificationService_NotificationActionTapped;
 
         //refreshing the view when we come back from details view
@@ -29,9 +33,26 @@ public partial class MainViewModel : BaseViewModel
         //https://johnthiriet.com/removing-async-void/
         LoadAsync().SafeFireAndForget(onException: ex => App.AlertService.ShowAlertAsync("Error Loading Main", ex.ToString()));
     }
+#else
+    public MainViewModel(Services.INotificationService notificationService)
+    {
+        this.notificationService = notificationService;
+        //this.notificationService.NotificationActionTapped += NotificationService_NotificationActionTapped;
+
+        //refreshing the view when we come back from details view
+        WeakReferenceMessenger.Default.Register<ReloadItemMessage>(this, ReloadItem);
+
+        //without package, fire and forget is a call for async void, which fires a task,
+        //but does not wait for its result to return and proceeds with the code. Notorious for error handling
+        //using the package should help with this and make it safer.
+        //https://johnthiriet.com/removing-async-void/
+        LoadAsync().SafeFireAndForget(onException: ex => App.AlertService.ShowAlertAsync("Error Loading Main", ex.ToString()));
+    }
+
+#endif
 
 
-    async Task LoadAsync()
+async Task LoadAsync()
 	{
         // first call to database also initialises the database
 		var tours = await App.DatabaseService.ListAll<Tour>();
@@ -159,12 +180,6 @@ public partial class MainViewModel : BaseViewModel
     }
 
     #region Notifications
-
-    //fires for iOS only if app is open - fires as soon as the notification is received by the phone
-    private void NotificationService_NotificationReceived(NotificationEventArgs e)
-    {
-
-    }
 
     //fires as soon as the notification is tapped by the user
     private void NotificationService_NotificationActionTapped(NotificationEventArgs e)

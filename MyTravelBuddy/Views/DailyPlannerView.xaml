@@ -27,6 +27,8 @@
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
              </HorizontalStackLayout>
-            </VerticalStackLayout>
-        </ScrollView>
+
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

@@ -20,9 +20,9 @@ public partial class SettingsPageViewModel : DomainObjectViewModel, IQueryAttrib
 
     PushSetting currentPushSetting;
 
-    private readonly INotificationService notificationService;
+    private readonly Plugin.LocalNotification.INotificationService notificationService;
 
-    public SettingsPageViewModel(INotificationService notificationService)
+    public SettingsPageViewModel(Plugin.LocalNotification.INotificationService notificationService)
 	{
         this.notificationService = notificationService;
 	}

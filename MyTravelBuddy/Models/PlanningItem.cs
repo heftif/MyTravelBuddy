@@ -19,6 +19,19 @@ public class PlanningItem : IDomainObject
     public int DaysBeforeEvent { get; set; }
     public DateTime DueDate { get; set; }
 
+    public bool IsOverDue
+    {
+        get
+        {
+            if(DueDate > DateTime.Now)
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
     public int GetId()
     {
         return PlanningItemId;
