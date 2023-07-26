@@ -1,40 +1,31 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 
 namespace MyTravelBuddy.ViewModels;
 
-public partial class PlanningViewModel : TourDetailsCollectionBase, IQueryAttributable
+public partial class DailyPlannerViewModel : TourDetailsCollectionBase, IQueryAttributable
 {
-    public ObservableCollection<PlanningItem> PlanningItems { get; } = new();
-
-    public PlanningViewModel()
+    public DailyPlannerViewModel()
     {
         IsLoaded = false;
 
-        App.ShellNavigationService.AddToShellStack(planning);
+        App.ShellNavigationService.AddToShellStack(details);
     }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        SelectedMenuItem = planning;
+        SelectedMenuItem = details;
 
         if (!IsLoaded)
         {
             Tour = query["Tour"] as Tour;
 
             tourId = Tour.TourId;
-
-            //load necessary objects
-            var planningItems = query["PlanningItems"] as List<PlanningItem>;
-
-            foreach (var item in planningItems)
-                PlanningItems.Add(item);
         }
 
         IsLoaded = true;
     }
 
-    protected override async Task NavigateToPlanning()
+    protected override async Task NavigateToDetails()
     {
         return;
     }

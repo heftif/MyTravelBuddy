@@ -8,6 +8,7 @@ namespace MyTravelBuddy.Services;
 public class SqlDatabase : ISqlDatabase
 {
     public SQLiteAsyncConnection Database;
+    
 
     bool initiated = false;
 
@@ -33,6 +34,7 @@ public class SqlDatabase : ISqlDatabase
 
 
         await CreateTables();
+        await AddPlanningItems();
 
         initiated = true;
 
@@ -46,6 +48,7 @@ public class SqlDatabase : ISqlDatabase
 
             await Database.CreateTableAsync<Tour>();
             await Database.CreateTableAsync<PushSetting>();
+            await Database.CreateTableAsync<PlanningItem>();
 
             //creates a table with the schema of the given object
             var res1 = await Database.CreateTableAsync<Vehicle>();
@@ -82,6 +85,44 @@ public class SqlDatabase : ISqlDatabase
         }
     }
 
+    async Task AddPlanningItems()
+    {
+        var tours = await ListAll<Tour>();
+
+        var tourIds = tours.Select(x => x.TourId).ToList();
+
+
+        foreach (var tourId in tourIds)
+        {
+            await AddPlanningItems(tourId);
+        }
+            
+    }
+
+    public async Task AddPlanningItems(int tourId)
+    {
+        var planningItems = await ListAll<PlanningItem>();
+
+        //planning items already exists, we don't need to create them
+        if (planningItems.Where(x => x.TourId == tourId).Any())
+            {
+                return;
+            }
+            else
+            {
+                //for fancier method, we could then do these reminders with the type of the travel in mind and look them up
+                //these must then also be changed when the type of travel is changed.
+                await SaveItemAsync(new PlanningItem { TourId = tourId, Name = "Book Flights", Description="Fix Start and End points of Destinations and Dates, then book flights", DaysBeforeEvent = 92, IsDone = false });
+                await SaveItemAsync(new PlanningItem { TourId = tourId, Name = "Check Passport Valid Dates", Description="Check that all your traveling documents are up to date and valid more than half a year after your travel (required by some countries)", DaysBeforeEvent = 92, IsDone = false });
+                await SaveItemAsync(new PlanningItem { TourId = tourId, Name = "Book Accomodations", Description="Fix a route and book awesome accomodations", DaysBeforeEvent = 60, IsDone = false });
+                await SaveItemAsync(new PlanningItem { TourId = tourId, Name = "Check Medication", Description="Check that you have all your necessary medication, get refills and check if all medication is allowed in the location you're travelling to",DaysBeforeEvent = 30, IsDone = false });
+                await SaveItemAsync(new PlanningItem { TourId = tourId, Name = "Print Documents", Description="Print all necessary documents and also, make a copy of your passport", DaysBeforeEvent = 7, IsDone = false });
+                await SaveItemAsync(new PlanningItem { TourId = tourId, Name = "Power Adapter", Description = "Check Adapter at location and see if you have the right one at home", DaysBeforeEvent = 7, IsDone = false });
+                await SaveItemAsync(new PlanningItem { TourId = tourId, Name = "Double Check Flights", Description="Check if all flights are departing as scheduled and no further information is available", DaysBeforeEvent = 3, IsDone = false });
+            }
+        
+    }
+
     public async Task<int> SaveItemAsync<T>(T item) where T : IDomainObject
     {
         await Init();
@@ -113,5 +154,6 @@ public class SqlDatabase : ISqlDatabase
         
     }
 
+    
 }
 

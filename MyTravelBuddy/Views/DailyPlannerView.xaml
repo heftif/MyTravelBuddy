@@ -1,11 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="MyTravelBuddy.Views.PlanningView"
+             x:Class="MyTravelBuddy.Views.DailyPlannerView"
              xmlns:viewmodel="clr-namespace:MyTravelBuddy.ViewModels"
-             xmlns:model="clr-namespace:MyTravelBuddy.Models"
-             x:DataType="viewmodel:PlanningViewModel"
-             Title="PlanningView">
+             x:DataType="viewmodel:DailyPlannerViewModel"
+             Title="DailyPlannerView">
 
     <Shell.BackButtonBehavior>
         <BackButtonBehavior Command="{Binding GoBackCommand}" />   
@@ -28,17 +27,6 @@
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
              </HorizontalStackLayout>
-
-            <CollectionView ItemsSource="{Binding PlanningItems}"
-                                SelectionMode="None"
-                                >
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="model:PlanningItem">
-                            <Label Text="{Binding Name}" />
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-            </CollectionView>
-
-         </VerticalStackLayout>
-    </ScrollView>
+            </VerticalStackLayout>
+        </ScrollView>
 </ContentPage>

@@ -148,6 +148,9 @@ public partial class MainViewModel : BaseViewModel
 
             var tourId = await App.DatabaseService.SaveItemAsync(tour);
 
+            //add the planning items for the newly created tour
+            await App.DatabaseService.AddPlanningItems(tourId);
+
             tour.TourId = tourId;
 
             Tours.Add(tour);
@@ -182,9 +185,13 @@ public partial class MainViewModel : BaseViewModel
             //go to the planningviewmodel
             var tour = await App.DatabaseService.GetObject<Tour>(tourId.Value);
 
+            var allPlanningItems = await App.DatabaseService.ListAll<PlanningItem>();
+            var planningItems = allPlanningItems.Where(x => x.TourId == tour.TourId).ToList();
+
             await Shell.Current.GoToAsync(nameof(PlanningView), true, new Dictionary<string, object>
             {
                 {"Tour", tour},
+                {"PlanningItems", planningItems }
             });
         }
         else

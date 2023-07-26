@@ -29,7 +29,8 @@ public static class MauiProgram
         //services
         builder.Services.AddSingleton<ISqlDatabase, SqlDatabase>();
 		builder.Services.AddSingleton <IAlertService, AlertService>();
-		builder.Services.AddSingleton<ImageUploadService>();
+        builder.Services.AddSingleton<IShellNavigationService, ShellNavigationService>();
+        builder.Services.AddSingleton<ImageUploadService>();
 		//builder.Services.AddSingleton<INotificationService>();
 
         //main pages (singleton means we create the page just once)
@@ -44,8 +45,12 @@ public static class MauiProgram
 		builder.Services.AddTransient<PlanningViewModel>();
 		builder.Services.AddTransient<PlanningView>();
 
-		//settings page
-		builder.Services.AddSingleton<SettingsPage>();
+        //daily list
+        builder.Services.AddTransient<DailyPlannerViewModel>();
+        builder.Services.AddTransient<DailyPlannerView>();
+
+        //settings page
+        builder.Services.AddSingleton<SettingsPage>();
 		builder.Services.AddSingleton<SettingsPageViewModel>();
 
 

@@ -9,6 +9,11 @@ namespace MyTravelBuddy.ViewModels;
 
 public partial class TourDetailsCollectionBase : DomainObjectViewModel
 {
+    protected const string overview = "Overview";
+    protected const string details = "Details";
+    protected const string planning = "Planning";
+    protected const string more = "More";
+
     public Tour Tour;
 
     protected int? tourId;
@@ -19,9 +24,11 @@ public partial class TourDetailsCollectionBase : DomainObjectViewModel
     public ObservableCollection<string> MenuPoints { get; } = new();
 
 
+
+
     public TourDetailsCollectionBase()
-	{
-        string[] menuItems = { "Overview", "Details", "Planning", "More" };
+    {
+        string[] menuItems = { overview, details, planning, more };
 
 
         foreach (var item in menuItems)
@@ -36,23 +43,24 @@ public partial class TourDetailsCollectionBase : DomainObjectViewModel
         {
             switch (value)
             {
-                case "Overview":
+                case overview:
                     NavigateToOverview().SafeFireAndForget();
                     break;
-                case "Details":
+                case details:
                     NavigateToDetails().SafeFireAndForget();
                     break;
-                case "Planning":
+                case planning:
                     NavigateToPlanning().SafeFireAndForget();
                     break;
-                case "More":
+                case more:
                     NavigateToMore().SafeFireAndForget();
                     break;
             }
         }
     }
 
-    async Task NavigateToOverview()
+    //virtual so we can override in details themselves, so we never navigate to ourself.
+    protected virtual async Task NavigateToOverview()
     {
         if (IsBusy)
             return;
@@ -60,27 +68,32 @@ public partial class TourDetailsCollectionBase : DomainObjectViewModel
         if (Tour.TourId == 0)
             return;
 
-        var vehiclesToAndFrom = await App.DatabaseService.ListAll<Vehicle>();
-        var vehiclesAt = await App.DatabaseService.ListAll<Vehicle>();
-        var tourTypes = await App.DatabaseService.ListAll<TourType>();
+        var idx = CheckIfExistsInShellStack(overview);
 
-        //it is necessary to hand over the vehicles and tourtypes to ensure correct loading of details
-        //since async loading otherwise causes delays and stutters. 
-        await Shell.Current.GoToAsync(nameof(TourDetailsView), false, new Dictionary<string, object>
+        if (idx < 0) //not found
         {
-            {"Tour", Tour},
-            {"VehiclesToAndFrom", vehiclesToAndFrom},
-            {"VehiclesAt", vehiclesAt},
-            {"TourTypes", tourTypes}
-        });
+            var vehiclesToAndFrom = await App.DatabaseService.ListAll<Vehicle>();
+            var vehiclesAt = await App.DatabaseService.ListAll<Vehicle>();
+            var tourTypes = await App.DatabaseService.ListAll<TourType>();
+
+            //it is necessary to hand over the vehicles and tourtypes to ensure correct loading of details
+            //since async loading otherwise causes delays and stutters. 
+            await Shell.Current.GoToAsync(nameof(TourDetailsView), false, new Dictionary<string, object>
+            {
+                {"Tour", Tour},
+                {"VehiclesToAndFrom", vehiclesToAndFrom},
+                {"VehiclesAt", vehiclesAt},
+                {"TourTypes", tourTypes}
+            });
+        }
+        else
+        {
+            string path = GetShellBackPath(idx);
+            await Shell.Current.GoToAsync(path, false);
+        }
     }
 
-    async Task NavigateToDetails()
-    {
-
-    }
-
-    async Task NavigateToPlanning()
+    protected virtual async Task NavigateToDetails()
     {
         if (IsBusy)
             return;
@@ -88,25 +101,89 @@ public partial class TourDetailsCollectionBase : DomainObjectViewModel
         if (Tour.TourId == 0)
             return;
 
+        var idx = CheckIfExistsInShellStack(details);
 
-        //it is necessary to hand over the vehicles and tourtypes to ensure correct loading of details
-        //since async loading otherwise causes delays and stutters. 
-        await Shell.Current.GoToAsync(nameof(PlanningView), false, new Dictionary<string, object>
+        if (idx < 0) //not found
         {
-            {"Tour", Tour},
-        });
+            await Shell.Current.GoToAsync(nameof(DailyPlannerView), false, new Dictionary<string, object>
+            {
+                {"Tour", Tour},
+            });
+        }
+        else
+        {
+            string path = GetShellBackPath(idx);
+            await Shell.Current.GoToAsync(path, false);
+        }
+    }
+
+    protected virtual async Task NavigateToPlanning()
+    {
+        if (IsBusy)
+            return;
+
+        if (Tour.TourId == 0)
+            return;
+
+        var idx = CheckIfExistsInShellStack(planning);
+
+        if (idx < 0) //not found
+        {
+            var allPlanningItems = await App.DatabaseService.ListAll<PlanningItem>();
+            var planningItems = allPlanningItems.Where(x => x.TourId == Tour.TourId).ToList();
+            //it is necessary to hand over the vehicles and tourtypes to ensure correct loading of details
+            //since async loading otherwise causes delays and stutters. 
+            await Shell.Current.GoToAsync(nameof(PlanningView), false, new Dictionary<string, object>
+            {
+                {"Tour", Tour},
+                {"PlanningItems", planningItems }
+            });
+        }
+        else
+        {
+            string path = GetShellBackPath(idx);
+            await Shell.Current.GoToAsync(path, false);
+        }
 
     }
 
-    async Task NavigateToMore()
+    protected virtual async Task NavigateToMore()
     {
 
     }
-
 
     public override bool Validate()
     {
         throw new NotImplementedException();
+    }
+
+    protected async Task GoBackToMainPage()
+    {
+        //index of main page is always 1 before starting the count in shellstack
+        var path = GetShellBackPath(-1); 
+        await Shell.Current.GoToAsync(path, true);
+    }
+
+
+    int CheckIfExistsInShellStack(string viewName)
+    {
+        return App.ShellNavigationService.CheckIfExistsInShellStack(viewName);
+    }
+
+    string GetShellBackPath(int idx)
+    {
+        var currentIdx = App.ShellNavigationService.GetCurrentIndex(idx);
+
+        string path = "";
+        int i = 0;
+
+        while(i < currentIdx-idx)
+        {
+            path += "/..";
+            i++;
+        }
+
+        return path[1..];
     }
 }
 

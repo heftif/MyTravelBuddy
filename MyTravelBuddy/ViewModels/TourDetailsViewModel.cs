@@ -70,8 +70,8 @@ public partial class TourDetailsViewModel : TourDetailsCollectionBase, IQueryAtt
         IsInEditMode = false;
         imageUploadService = service;
 
-
-        SelectedMenuItem = "Overview";
+        //SelectedMenuItem = overview;
+        App.ShellNavigationService.AddToShellStack(overview);
         //due to issues with carouselview, the work around of using a message when view is loaded and making it async was necessary!
         WeakReferenceMessenger.Default.Register<SetSelectedItemMessage>(this, (r,m) => SetSelectedItems(r,m).SafeFireAndForget());
     }
@@ -79,6 +79,8 @@ public partial class TourDetailsViewModel : TourDetailsCollectionBase, IQueryAtt
     //probably causes the loading issues in android
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
+        SelectedMenuItem = overview;
+
         if (!IsLoaded)
         {
             Tour = query["Tour"] as Tour;
@@ -106,6 +108,8 @@ public partial class TourDetailsViewModel : TourDetailsCollectionBase, IQueryAtt
             //be sync to avoid stutters when loading an ensure proper binding
             Load();
 
+            IsLoaded = true;
+
         }
     }
 
@@ -114,7 +118,7 @@ public partial class TourDetailsViewModel : TourDetailsCollectionBase, IQueryAtt
 
         if (tourId.HasValue && tourId > 0)
         {
-            LoadProperties().SafeFireAndForget();
+            LoadProperties();
         }
         else
         {
@@ -122,11 +126,9 @@ public partial class TourDetailsViewModel : TourDetailsCollectionBase, IQueryAtt
             IsInEditMode = true;
         }
 
-        IsLoaded = true;
-
     }
 
-    async Task LoadProperties()
+    void LoadProperties()
     {
         //get object
         GeneralLocation = Tour.GeneralLocation;
@@ -139,6 +141,12 @@ public partial class TourDetailsViewModel : TourDetailsCollectionBase, IQueryAtt
 
         // so all errors etc are set correctly
         Validate();
+    }
+
+    //override this method so that we never navigate to ourself 
+    protected override async Task NavigateToOverview()
+    {
+        return;
     }
 
     async Task SetSelectedItems(object sender, SetSelectedItemMessage msg)
@@ -256,7 +264,8 @@ public partial class TourDetailsViewModel : TourDetailsCollectionBase, IQueryAtt
         {
             WeakReferenceMessenger.Default.Send(new ReloadItemMessage(Tour));
 
-            await Shell.Current.GoToAsync("..", true);
+            //always go back to main page! 
+            await GoBackToMainPage();
         }
     }
 

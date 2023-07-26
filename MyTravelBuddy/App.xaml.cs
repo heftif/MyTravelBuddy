@@ -5,6 +5,7 @@ public partial class App : Application
     public static IServiceProvider Services;
     public static IAlertService AlertService;
     public static ISqlDatabase DatabaseService;
+    public static IShellNavigationService ShellNavigationService;
 
     public App(IServiceProvider provider)
 	{
@@ -14,6 +15,7 @@ public partial class App : Application
         Services = provider;
         AlertService = Services.GetService<IAlertService>();
         DatabaseService = Services.GetService<ISqlDatabase>();
+        ShellNavigationService = Services.GetService<IShellNavigationService>();
 
         MainPage = new AppShell();
 	}
