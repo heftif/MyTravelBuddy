@@ -12,6 +12,8 @@ public partial class MainViewModel : BaseViewModel
 {
     public ObservableCollection<Tour> Tours { get; } = new();
 
+
+    //different notification services for desktop and mobile version
 #if ANDROID || IOS
     Plugin.LocalNotification.INotificationService notificationService;
 #else
@@ -24,21 +26,19 @@ public partial class MainViewModel : BaseViewModel
         this.notificationService = notificationService;
         this.notificationService.NotificationActionTapped += NotificationService_NotificationActionTapped;
 
-        //refreshing the view when we come back from details view
-        WeakReferenceMessenger.Default.Register<ReloadItemMessage>(this, ReloadItem);
-
-        //without package, fire and forget is a call for async void, which fires a task,
-        //but does not wait for its result to return and proceeds with the code. Notorious for error handling
-        //using the package should help with this and make it safer.
-        //https://johnthiriet.com/removing-async-void/
-        LoadAsync().SafeFireAndForget(onException: ex => App.AlertService.ShowAlertAsync("Error Loading Main", ex.ToString()));
+        Load();
     }
 #else
     public MainViewModel(Services.INotificationService notificationService)
     {
         this.notificationService = notificationService;
-        //this.notificationService.NotificationActionTapped += NotificationService_NotificationActionTapped;
+        Load();
+    }
 
+#endif
+
+    void Load()
+    {
         //refreshing the view when we come back from details view
         WeakReferenceMessenger.Default.Register<ReloadItemMessage>(this, ReloadItem);
 
@@ -49,10 +49,7 @@ public partial class MainViewModel : BaseViewModel
         LoadAsync().SafeFireAndForget(onException: ex => App.AlertService.ShowAlertAsync("Error Loading Main", ex.ToString()));
     }
 
-#endif
-
-
-async Task LoadAsync()
+    async Task LoadAsync()
 	{
         // first call to database also initialises the database
 		var tours = await App.DatabaseService.ListAll<Tour>();
