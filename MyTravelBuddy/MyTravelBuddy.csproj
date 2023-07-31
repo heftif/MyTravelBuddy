@@ -94,12 +94,14 @@
 	  <None Remove="Resources\Images\cruisetrip.png" />
 	  <None Remove="Resources\Images\gear.png" />
 	  <None Remove="Resources\.DS_Store" />
+	  <None Remove="Models\Messages\" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Models\" />
 	  <Folder Include="Services\" />
 	  <Folder Include="ViewModels\" />
 	  <Folder Include="Views\" />
+	  <Folder Include="Models\Messages\" />
 	</ItemGroup>
 	<ItemGroup>
 	  <BundleResource Include="Resources\Images\car.svg" />

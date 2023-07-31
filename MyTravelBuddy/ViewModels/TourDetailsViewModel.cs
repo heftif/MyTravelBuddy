@@ -250,11 +250,10 @@ public partial class TourDetailsViewModel : TourDetailsCollectionBase, IQueryAtt
         });
     }
 
-
-    //this needs to be changed such that it's triggered when we navigate from this page!
-    //triggered when pressing back button
+    //todo only save when there were changes
+    //triggered when navigating from this page
     [RelayCommand]
-    public async Task GoBackAsync()
+    public async Task DisappearingAsync()
     {
         MapProperties();
 
@@ -264,9 +263,6 @@ public partial class TourDetailsViewModel : TourDetailsCollectionBase, IQueryAtt
         if (success)
         {
             WeakReferenceMessenger.Default.Send(new ReloadItemMessage(Tour));
-
-            //always go back to main page! 
-            await GoBackToMainPage();
         }
     }
 
@@ -281,6 +277,16 @@ public partial class TourDetailsViewModel : TourDetailsCollectionBase, IQueryAtt
         Tour.StartsOn = StartsOn;
         Tour.EndsOn = EndsOn;
         Tour.Image = TourImage;
+    }
+
+
+    //triggered when pressing back button
+    [RelayCommand]
+    public async Task GoBackAsync()
+    {
+        //always go back to main page! 
+        await GoBackToMainPage();
+
     }
 
 

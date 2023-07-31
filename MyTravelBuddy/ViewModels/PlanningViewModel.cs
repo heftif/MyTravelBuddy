@@ -66,7 +66,6 @@ public partial class PlanningViewModel : TourDetailsCollectionBase, IQueryAttrib
 
             foreach (var item in orderedPlanningItems)
                 PlanningItems.Add(item);
-
         }
 
         IsLoaded = true;
@@ -109,16 +108,21 @@ public partial class PlanningViewModel : TourDetailsCollectionBase, IQueryAttrib
         }
     }
 
-    //this needs to be changed such that it's triggered when we navigate from this page!
-    //triggered when pressing back button
     [RelayCommand]
-    public async Task GoBackAsync()
+    public async Task AddCustomPlanningItemAsync()
+    {
+        //todo implement custom item adding screen 
+    }
+
+    //triggered when navigating from that page
+    [RelayCommand]
+    public async Task DisappearingAsync()
     {
 
-#if ANDROID || IOS
-        if(PlanningItems.Any(x => x.IsNotificationChanged))
+#if ANDROID || IOS
+        if (PlanningItems.Any(x => x.IsNotificationChanged))
         {
-            foreach(var item in PlanningItems.Where(x => x.IsNotificationChanged))
+            foreach (var item in PlanningItems.Where(x => x.IsNotificationChanged))
             {
                 await SetupNotifications(item);
             }
@@ -131,6 +135,14 @@ public partial class PlanningViewModel : TourDetailsCollectionBase, IQueryAttrib
 
         }
 #endif
+    }
+
+
+    //triggered when pressing back button
+    [RelayCommand]
+    public async Task GoBackAsync()
+    {
+
         //always go back to main page! 
         await GoBackToMainPage();
     }

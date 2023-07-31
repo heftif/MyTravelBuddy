@@ -4,12 +4,18 @@
              x:Class="MyTravelBuddy.Views.PlanningView"
              xmlns:viewmodel="clr-namespace:MyTravelBuddy.ViewModels"
              xmlns:model="clr-namespace:MyTravelBuddy.Models"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:DataType="viewmodel:PlanningViewModel"
              Title="PlanningView">
 
     <Shell.BackButtonBehavior>
         <BackButtonBehavior Command="{Binding GoBackCommand}" />   
     </Shell.BackButtonBehavior>
+
+    <ContentPage.Behaviors>
+        <!--<toolkit:EventToCommandBehavior Command="{Binding AppearingCommand}" EventName="Appearing" />-->
+        <toolkit:EventToCommandBehavior Command="{Binding DisappearingCommand}" EventName="Disappearing" />
+    </ContentPage.Behaviors>
 
     <ScrollView>      
         <VerticalStackLayout Padding="5">
@@ -114,6 +120,9 @@
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
             </CollectionView>
+
+            <Button Text="Add Custom Planning Item"
+                    Command="{Binding AddCustomPlanningItemCommand}"/>
          </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

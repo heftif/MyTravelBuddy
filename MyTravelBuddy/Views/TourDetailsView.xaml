@@ -24,6 +24,11 @@
         </ToolbarItem>
     </ContentPage.ToolbarItems>-->
 
+     <ContentPage.Behaviors>
+        <!--<toolkit:EventToCommandBehavior Command="{Binding AppearingCommand}" EventName="Appearing" />-->
+        <toolkit:EventToCommandBehavior Command="{Binding DisappearingCommand}" EventName="Disappearing" />
+    </ContentPage.Behaviors>
+
     <ContentPage.Resources>
         <ResourceDictionary>
                 <toolkit:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageSourceConverter" />
