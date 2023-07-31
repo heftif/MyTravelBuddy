@@ -105,7 +105,6 @@ public partial class PlanningItemViewModel : DomainObjectViewModel
 
     void MapProperties()
     {
-
         planningItem.Name = Name;
         planningItem.Description = Description;
         planningItem.IsDone = IsDone;
@@ -119,4 +118,6 @@ public partial class PlanningItemViewModel : DomainObjectViewModel
     }
 
 }
+
+
 

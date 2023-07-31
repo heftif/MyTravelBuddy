@@ -8,7 +8,7 @@ using Plugin.LocalNotification.AndroidOption;
 
 namespace MyTravelBuddy.ViewModels;
 
-public partial class PlanningCollectionViewModel : TourDetailsCollectionBase, IQueryAttributable
+public partial class PlanningCollectionViewModel : TourDetailsCollectionViewModelBase, IQueryAttributable
 {
     public ObservableCollection<PlanningItemViewModel> PlanningItems { get; } = new();
 

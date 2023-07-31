@@ -49,6 +49,7 @@ public class SqlDatabase : ISqlDatabase
             await Database.CreateTableAsync<Tour>();
             await Database.CreateTableAsync<PushSetting>();
             await Database.CreateTableAsync<PlanningItem>();
+            await Database.CreateTableAsync<DayPlan>();
 
             //creates a table with the schema of the given object
             var res1 = await Database.CreateTableAsync<Vehicle>();

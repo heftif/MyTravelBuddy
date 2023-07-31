@@ -1,11 +1,42 @@
 ﻿using System;
-namespace MyTravelBuddy.Models
+using SQLiteNetExtensions.Attributes;
+using SQLite;
+
+namespace MyTravelBuddy.Models;
+
+[Table("DayPlans")]
+public class DayPlan : IDomainObject
 {
-	public class DayPlan
-	{
-		public DayPlan()
-		{
-		}
-	}
+    [PrimaryKey, AutoIncrement]
+    public int DayPlanId { get; set; }
+
+    [ForeignKey(typeof(Tour))] // define foreign key
+    public int TourId { get; set; }
+
+    public string Location { get; set; }
+    public int TourDay { get; set; }
+    public DateTime? Date { get; set; }
+
+    public bool HasDocuments { get; set; }
+
+    public bool InActive { get; set; }
+
+    public int GetId()
+    {
+        return DayPlanId;
+    }
+
+    public static DayPlan Empty(int tourDay, int tourId, DateTime date)
+    {
+        return new DayPlan
+        {
+            TourId = tourId,
+            TourDay = tourDay,
+            Location = "",
+            InActive = false,
+            Date = date,
+            HasDocuments = false,
+        };
+    }
 }
 

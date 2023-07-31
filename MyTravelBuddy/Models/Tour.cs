@@ -22,7 +22,7 @@ public class Tour : IDomainObject
     public string Name { get; set; }
     public string GeneralLocation { get; set; }
     public DateTime StartsOn { get; set; }
-    public DateTime? EndsOn { get; set; }
+    public DateTime EndsOn { get; set; }
 
     public byte[] Image { get; set; }
 

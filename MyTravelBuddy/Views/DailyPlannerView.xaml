@@ -28,6 +28,47 @@
                     </BindableLayout.ItemTemplate>
              </HorizontalStackLayout>
 
+            <CollectionView ItemsSource="{Binding DayPlans}"
+                                SelectionMode="None">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical" ItemSpacing="5"/>
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="viewmodel:DayPlanItemViewModel">
+                            <Border Padding="2"
+                                    StrokeThickness="2">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10"/>
+                                </Border.StrokeShape>
+ 
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="3*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition Height="50"/>
+                                    </Grid.RowDefinitions>
+
+                                    <HorizontalStackLayout Grid.Row="0" Grid.Column="0">
+                                        <Label Text="{Binding Name}"
+                                               Style="{StaticResource MediumLabel}">
+                                        </Label>
+                                    </HorizontalStackLayout>
+
+                                    <Label Grid.Row="1" Grid.Column="0"
+                                           Text="{Binding DateString}"
+                                           Style="{StaticResource MicroLabel}"
+                                           Margin="3,0,0,0">
+                                    </Label>
+
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+            </CollectionView>
+
 
         </VerticalStackLayout>
     </ScrollView>

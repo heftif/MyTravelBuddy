@@ -7,7 +7,7 @@ using CommunityToolkit.Mvvm.Messaging;
 
 namespace MyTravelBuddy.ViewModels;
 
-public partial class TourDetailsCollectionBase : DomainObjectViewModel
+public partial class TourDetailsCollectionViewModelBase : DomainObjectViewModel
 {
     protected const string overview = "Overview";
     protected const string details = "Details";
@@ -26,7 +26,7 @@ public partial class TourDetailsCollectionBase : DomainObjectViewModel
 
 
 
-    public TourDetailsCollectionBase()
+    public TourDetailsCollectionViewModelBase()
     {
         string[] menuItems = { overview, details, planning, more };
 
@@ -105,9 +105,21 @@ public partial class TourDetailsCollectionBase : DomainObjectViewModel
 
         if (idx < 0) //not found
         {
+            var allDayPlans = await App.DatabaseService.ListAll<DayPlan>();
+            var dayPlans = allDayPlans.Where(x => x.TourId == Tour.TourId).ToList();
+
+            List<DayPlanItemViewModel> dayPlanViewModels = new();
+
+            foreach (var item in dayPlans)
+            {
+                dayPlanViewModels.Add(new DayPlanItemViewModel(item));
+            }
+
+
             await Shell.Current.GoToAsync(nameof(DailyPlannerView), false, new Dictionary<string, object>
             {
                 {"Tour", Tour},
+                {"DayPlans", dayPlanViewModels }
             });
         }
         else
