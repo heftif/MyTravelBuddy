@@ -16,13 +16,13 @@
     </Shell.BackButtonBehavior>
 
 
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Command="{Binding GoToSettingsCommand}">
+    <!--<ContentPage.ToolbarItems>
+        <ToolbarItem Command="{Binding GoToSettingsCommand}" >
             <ToolbarItem.IconImageSource>
                   <FileImageSource File="gear.png"/>
             </ToolbarItem.IconImageSource>
         </ToolbarItem>
-    </ContentPage.ToolbarItems>
+    </ContentPage.ToolbarItems>-->
 
     <ContentPage.Resources>
         <ResourceDictionary>

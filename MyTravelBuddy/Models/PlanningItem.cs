@@ -17,6 +17,7 @@ public class PlanningItem : IDomainObject
     public bool IsDone { get; set; }
 
     public int DaysBeforeEvent { get; set; }
+    public bool NotificationEnabled { get; set; }
 
     public int GetId()
     {

@@ -251,6 +251,7 @@ public partial class TourDetailsViewModel : TourDetailsCollectionBase, IQueryAtt
     }
 
 
+    //this needs to be changed such that it's triggered when we navigate from this page!
     //triggered when pressing back button
     [RelayCommand]
     public async Task GoBackAsync()

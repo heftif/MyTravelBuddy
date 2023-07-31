@@ -5,6 +5,7 @@ public interface INotificationService
 {
     bool Cancel(int id);
     Task<bool> AreNotificationsEnabled();
-    bool RequestNotificationPermission();
+    Task<bool> RequestNotificationPermission();
+
 }
 

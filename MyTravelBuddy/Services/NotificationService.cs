@@ -22,5 +22,10 @@ public class NotificationService : INotificationService
     {
         throw new NotImplementedException();
     }
+
+    Task<bool> INotificationService.RequestNotificationPermission()
+    {
+        throw new NotImplementedException();
+    }
 }
 

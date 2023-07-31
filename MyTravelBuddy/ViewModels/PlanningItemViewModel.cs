@@ -1,6 +1,8 @@
 ﻿using System;
 using AsyncAwaitBestPractices;
 using CommunityToolkit.Mvvm.Messaging;
+using Plugin.LocalNotification;
+using Plugin.LocalNotification.AndroidOption;
 
 namespace MyTravelBuddy.ViewModels;
 
@@ -15,6 +17,7 @@ public partial class PlanningItemViewModel : DomainObjectViewModel
     string description;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsNotDone))]
     bool isDone;
 
     [ObservableProperty]
@@ -23,6 +26,18 @@ public partial class PlanningItemViewModel : DomainObjectViewModel
 
     [ObservableProperty]
     int daysBeforeEvent;
+
+    [ObservableProperty]
+    bool notificationEnabled;
+
+    [ObservableProperty]
+    bool isAndroidOrIOs;
+
+    public bool IsNotDone => !IsDone;
+
+    public bool IsNotificationChanged;
+
+    public int PlanningItemId;
 
     public bool IsOverDue
     {
@@ -37,7 +52,6 @@ public partial class PlanningItemViewModel : DomainObjectViewModel
         }
     }
 
-
     public PlanningItemViewModel(PlanningItem planningItem)
 	{
         this.planningItem = planningItem;
@@ -45,8 +59,16 @@ public partial class PlanningItemViewModel : DomainObjectViewModel
         Description = planningItem.Description;
         IsDone = planningItem.IsDone;
         DaysBeforeEvent = planningItem.DaysBeforeEvent;
+        NotificationEnabled = planningItem.NotificationEnabled;
+        PlanningItemId = planningItem.PlanningItemId;
 
-	}
+#if ANDROID || IOS
+        IsAndroidOrIOs = true;
+#else
+        IsAndroidOrIOs = false;
+#endif
+
+    }
 
     partial void OnIsDoneChanged(bool value)
     {
@@ -57,19 +79,44 @@ public partial class PlanningItemViewModel : DomainObjectViewModel
         
         //call save on baseviewmodel to ensure validation etc.
         SaveDomainObject(planningItem).SafeFireAndForget();
+
+        //remove notification of the item -> even when IsDone = false and it was previous enabled, such
+        //that is has to be set again, so everything works correctly.
+        NotificationEnabled = false;
+    }
+
+    partial void OnNotificationEnabledChanged(bool value)
+    {
+        //make sure we handle toggeling on and off in the same action
+        if (IsNotificationChanged)
+        {
+            IsNotificationChanged = false;
+        }
+        else if (planningItem.NotificationEnabled != NotificationEnabled)
+        {
+            IsNotificationChanged = true;
+        }
+
+        MapProperties();
+
+        //call save on baseviewmodel to ensure validation etc.
+        SaveDomainObject(planningItem).SafeFireAndForget();
     }
 
     void MapProperties()
     {
+
         planningItem.Name = Name;
         planningItem.Description = Description;
         planningItem.IsDone = IsDone;
         planningItem.DaysBeforeEvent = DaysBeforeEvent;
+        planningItem.NotificationEnabled = NotificationEnabled;
     }
 
     public override bool Validate()
     {
         return true;
     }
+
 }
 
