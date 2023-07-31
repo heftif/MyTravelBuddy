@@ -44,7 +44,7 @@
                                 </Border.StrokeShape>
                                 <Border.Triggers>
                                     <DataTrigger TargetType="Border"
-                                                 Binding="{Binding IsOverdue}"
+                                                 Binding="{Binding IsOverDue}"
                                                  Value="True">
                                         <Setter Property="Background" Value="Red"/>
                                         <Setter Property="Stroke" Value="Red"/>
@@ -62,15 +62,33 @@
 
                                     <Label Grid.Row="0" Grid.Column="0"
                                             Text="{Binding Name}"
-                                           Style="{StaticResource MediumLabel}"/>
+                                           Style="{StaticResource MediumLabel}">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label"
+                                                         Binding="{Binding IsDone}"
+                                                         Value="True">
+                                                <Setter Property="TextDecorations" Value="Strikethrough"/>
+                                                <Setter Property="TextColor" Value="LightGray"/>
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+
                                     <Label Grid.Row="1" Grid.Column="0"
                                            Text="{Binding Description}"
                                            Style="{StaticResource MicroLabel}"
-                                           Margin="3,0,0,0"/>
+                                           Margin="3,0,0,0">
+                                           <Label.Triggers>
+                                                <DataTrigger TargetType="Label"
+                                                             Binding="{Binding IsDone}"
+                                                             Value="True">
+                                                    <Setter Property="TextColor" Value="LightGray"/>
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                    </Label>
                                     <CheckBox Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"
                                               VerticalOptions="Start"
                                               HorizontalOptions="Center"
-                                              IsChecked="{Binding IsDone}"/>
+                                              IsChecked="{Binding IsDone, Mode=TwoWay}"/>
                                 </Grid>
                             </Border>
                         </DataTemplate>

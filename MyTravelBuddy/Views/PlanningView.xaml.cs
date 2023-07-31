@@ -7,4 +7,5 @@ public partial class PlanningView : ContentPage
 		InitializeComponent();
 		BindingContext = vm;
 	}
+
 }

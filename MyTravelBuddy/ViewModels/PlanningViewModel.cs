@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace MyTravelBuddy.ViewModels;
 
 public partial class PlanningViewModel : TourDetailsCollectionBase, IQueryAttributable
 {
-    public ObservableCollection<PlanningItem> PlanningItems { get; } = new();
+    public ObservableCollection<PlanningItemViewModel> PlanningItems { get; } = new();
 
     public PlanningViewModel()
     {
         IsLoaded = false;
 
         App.ShellNavigationService.AddToShellStack(planning);
+
+        WeakReferenceMessenger.Default.Register<ReloadPlanningItemsMessage>(this, OnReloadPlanningItemsReceived);
     }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
@@ -25,16 +28,26 @@ public partial class PlanningViewModel : TourDetailsCollectionBase, IQueryAttrib
             tourId = Tour.TourId;
 
             //load necessary objects
-            var planningItems = query["PlanningItems"] as List<PlanningItem>;
+            var planningItems = query["PlanningItems"] as List<PlanningItemViewModel>;
 
-            //todo set the duedates for all these planning items!
 
             foreach (var item in planningItems)
+            {
+                item.DueDate = Tour.StartsOn.AddDays(-item.DaysBeforeEvent);
+            }
+
+            var orderedPlanningItems = planningItems.OrderBy(x => x.IsDone).OrderByDescending(x => x.DaysBeforeEvent);
+
+            foreach (var item in orderedPlanningItems)
                 PlanningItems.Add(item);
+
         }
 
         IsLoaded = true;
     }
+
+    //todo -> sort done tasks to the bottom
+    //todo -> add option to add custom tasks
 
     protected override async Task NavigateToPlanning()
     {
@@ -46,6 +59,24 @@ public partial class PlanningViewModel : TourDetailsCollectionBase, IQueryAttrib
         return true;
     }
 
+    //call must be sync, else it does not work properly for android
+    public void OnReloadPlanningItemsReceived(object sender, ReloadPlanningItemsMessage msg)
+    {
+        PlanningItems.Remove(msg.Value);
+
+        if(msg.Value.IsDone)
+        {
+            var amount = PlanningItems.Count();
+
+            PlanningItems.Insert(amount, msg.Value);
+        }
+        else
+        {
+            PlanningItems.Insert(0, msg.Value);
+        }
+        
+    }
+
     //triggered when pressing back button
     [RelayCommand]
     public async Task GoBackAsync()
@@ -53,5 +84,6 @@ public partial class PlanningViewModel : TourDetailsCollectionBase, IQueryAttrib
         //always go back to main page! 
         await GoBackToMainPage();
     }
+
 }
 

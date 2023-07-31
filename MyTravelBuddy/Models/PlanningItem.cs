@@ -17,20 +17,6 @@ public class PlanningItem : IDomainObject
     public bool IsDone { get; set; }
 
     public int DaysBeforeEvent { get; set; }
-    public DateTime DueDate { get; set; }
-
-    public bool IsOverDue
-    {
-        get
-        {
-            if(DueDate > DateTime.Now)
-            {
-                return true;
-            }
-
-            return false;
-        }
-    }
 
     public int GetId()
     {

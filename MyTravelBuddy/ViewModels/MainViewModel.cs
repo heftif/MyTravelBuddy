@@ -20,6 +20,7 @@ public partial class MainViewModel : BaseViewModel
     Services.INotificationService notificationService;
 #endif
 
+    //different constructors, else we get issue with injected service
 #if ANDROID || IOS
     public MainViewModel(Plugin.LocalNotification.INotificationService notificationService)
     {
@@ -200,10 +201,17 @@ public partial class MainViewModel : BaseViewModel
             var allPlanningItems = await App.DatabaseService.ListAll<PlanningItem>();
             var planningItems = allPlanningItems.Where(x => x.TourId == tour.TourId).ToList();
 
+            List<PlanningItemViewModel> planningViewModels = new();
+
+            foreach(var item in planningItems)
+            {
+                planningViewModels.Add(new PlanningItemViewModel(item));
+            }
+
             await Shell.Current.GoToAsync(nameof(PlanningView), true, new Dictionary<string, object>
             {
                 {"Tour", tour},
-                {"PlanningItems", planningItems }
+                {"PlanningItems", planningViewModels }
             });
         }
         else

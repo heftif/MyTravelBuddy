@@ -131,12 +131,20 @@ public partial class TourDetailsCollectionBase : DomainObjectViewModel
         {
             var allPlanningItems = await App.DatabaseService.ListAll<PlanningItem>();
             var planningItems = allPlanningItems.Where(x => x.TourId == Tour.TourId).ToList();
+
+            List<PlanningItemViewModel> planningViewModels = new();
+
+            foreach (var item in planningItems)
+            {
+                planningViewModels.Add(new PlanningItemViewModel(item));
+            }
+
             //it is necessary to hand over the vehicles and tourtypes to ensure correct loading of details
             //since async loading otherwise causes delays and stutters. 
             await Shell.Current.GoToAsync(nameof(PlanningView), false, new Dictionary<string, object>
             {
                 {"Tour", Tour},
-                {"PlanningItems", planningItems }
+                {"PlanningItems", planningViewModels }
             });
         }
         else
