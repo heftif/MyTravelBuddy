@@ -2,7 +2,7 @@
 
 public partial class PlanningView : ContentPage
 {
-	public PlanningView(PlanningViewModel vm)
+	public PlanningView(PlanningCollectionViewModel vm)
 	{
 		InitializeComponent();
 		BindingContext = vm;

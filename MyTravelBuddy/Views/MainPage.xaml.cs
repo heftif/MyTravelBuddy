@@ -2,7 +2,7 @@
 
 public partial class MainPage : ContentPage
 {
-    public MainPage(MainViewModel vm)
+    public MainPage(MainPageViewModel vm)
     {
         InitializeComponent();
         // it is necessary to inject the vm and set it as binding context to

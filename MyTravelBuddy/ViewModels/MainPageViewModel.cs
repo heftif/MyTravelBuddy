@@ -8,7 +8,7 @@ using Plugin.LocalNotification.EventArgs;
 
 namespace MyTravelBuddy.ViewModels;
 
-public partial class MainViewModel : BaseViewModel
+public partial class MainPageViewModel : BaseViewModel
 {
     public ObservableCollection<Tour> Tours { get; } = new();
 
@@ -22,7 +22,7 @@ public partial class MainViewModel : BaseViewModel
 
     //different constructors, else we get issue with injected service
 #if ANDROID || IOS
-    public MainViewModel(Plugin.LocalNotification.INotificationService notificationService)
+    public MainPageViewModel(Plugin.LocalNotification.INotificationService notificationService)
     {
         this.notificationService = notificationService;
         this.notificationService.NotificationActionTapped += NotificationService_NotificationActionTapped;
@@ -30,7 +30,7 @@ public partial class MainViewModel : BaseViewModel
         Load();
     }
 #else
-    public MainViewModel(Services.INotificationService notificationService)
+    public MainPageViewModel(Services.INotificationService notificationService)
     {
         this.notificationService = notificationService;
         Load();

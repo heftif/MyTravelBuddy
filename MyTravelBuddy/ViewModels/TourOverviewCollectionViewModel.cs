@@ -7,7 +7,7 @@ using Microsoft.Maui.Storage;
 
 namespace MyTravelBuddy.ViewModels;
 
-public partial class TourDetailsViewModel : TourDetailsCollectionBase, IQueryAttributable
+public partial class TourOverviewCollectionViewModel : TourDetailsCollectionViewModelBase, IQueryAttributable
 {
 
     [ObservableProperty]
@@ -64,7 +64,7 @@ public partial class TourDetailsViewModel : TourDetailsCollectionBase, IQueryAtt
     ImageUploadService imageUploadService;
 
 
-    public TourDetailsViewModel(ImageUploadService service)
+    public TourOverviewCollectionViewModel(ImageUploadService service)
     {
         IsLoaded = false;
         IsInEditMode = false;

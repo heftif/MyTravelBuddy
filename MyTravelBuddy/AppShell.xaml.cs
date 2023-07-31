@@ -7,13 +7,13 @@ public partial class AppShell : Shell
 		InitializeComponent();
 
         Routing.RegisterRoute(nameof(TourDetailsView), typeof(TourDetailsView));
-        Routing.RegisterRoute(nameof(TourDetailsViewModel), typeof(TourDetailsViewModel));
+        Routing.RegisterRoute(nameof(TourOverviewCollectionViewModel), typeof(TourOverviewCollectionViewModel));
 
         Routing.RegisterRoute(nameof(SettingsPage), typeof(SettingsPage));
         Routing.RegisterRoute(nameof(SettingsPageViewModel), typeof(SettingsPageViewModel));
 
         Routing.RegisterRoute(nameof(PlanningView), typeof(PlanningView));
-        Routing.RegisterRoute(nameof(PlanningViewModel), typeof(PlanningViewModel));
+        Routing.RegisterRoute(nameof(PlanningCollectionViewModel), typeof(PlanningCollectionViewModel));
 
         Routing.RegisterRoute(nameof(DailyPlannerView), typeof(DailyPlannerView));
         Routing.RegisterRoute(nameof(DailyPlannerViewModel), typeof(DailyPlannerViewModel));

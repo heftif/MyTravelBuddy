@@ -5,7 +5,7 @@
              xmlns:viewmodel="clr-namespace:MyTravelBuddy.ViewModels"
              xmlns:model="clr-namespace:MyTravelBuddy.Models"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             x:DataType="viewmodel:PlanningViewModel"
+             x:DataType="viewmodel:PlanningCollectionViewModel"
              Title="PlanningView">
 
     <Shell.BackButtonBehavior>

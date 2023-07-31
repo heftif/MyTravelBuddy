@@ -5,7 +5,7 @@
              xmlns:viewmodel="clr-namespace:MyTravelBuddy.ViewModels"
              x:Class="MyTravelBuddy.MainPage"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             x:DataType="viewmodel:MainViewModel"
+             x:DataType="viewmodel:MainPageViewModel"
              >
 
     <ContentPage.Resources>
@@ -54,13 +54,13 @@
 
                                 <ImageButton Source="{Binding Image, Mode=OneWay, Converter={StaticResource ByteArrayToImageSourceConverter}, TargetNullValue='travel.png'}"
                                              HeightRequest="150"
-                                             IsEnabled = "{Binding IsNotBusy, Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}}}"
+                                             IsEnabled = "{Binding IsNotBusy, Source={RelativeSource AncestorType={x:Type viewmodel:MainPageViewModel}}}"
                                              CornerRadius="20"
                                              BorderColor="Black"
                                              BorderWidth="1"
                                              Aspect="Fill"
                                              Grid.Row="0"
-                                             Command="{Binding OpenTourCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}}}"
+                                             Command="{Binding OpenTourCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MainPageViewModel}}}"
                                              CommandParameter="{Binding .}"
                                              />
 

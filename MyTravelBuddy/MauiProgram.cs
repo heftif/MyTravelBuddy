@@ -37,15 +37,15 @@ public static class MauiProgram
 #endif
 
         //main pages (singleton means we create the page just once)
-        builder.Services.AddSingleton<MainViewModel>();
+        builder.Services.AddSingleton<MainPageViewModel>();
         builder.Services.AddSingleton<MainPage>();
 
         //tour
-        builder.Services.AddTransient<TourDetailsViewModel>();
+        builder.Services.AddTransient<TourOverviewCollectionViewModel>();
         builder.Services.AddTransient<TourDetailsView>();
 
 		//planning
-		builder.Services.AddTransient<PlanningViewModel>();
+		builder.Services.AddTransient<PlanningCollectionViewModel>();
 		builder.Services.AddTransient<PlanningView>();
 
         //daily list

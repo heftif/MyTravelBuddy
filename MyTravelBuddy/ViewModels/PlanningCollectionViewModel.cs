@@ -8,7 +8,7 @@ using Plugin.LocalNotification.AndroidOption;
 
 namespace MyTravelBuddy.ViewModels;
 
-public partial class PlanningViewModel : TourDetailsCollectionBase, IQueryAttributable
+public partial class PlanningCollectionViewModel : TourDetailsCollectionBase, IQueryAttributable
 {
     public ObservableCollection<PlanningItemViewModel> PlanningItems { get; } = new();
 
@@ -24,7 +24,7 @@ public partial class PlanningViewModel : TourDetailsCollectionBase, IQueryAttrib
 #endif
 
 #if ANDROID || IOS
-    public PlanningViewModel(Plugin.LocalNotification.INotificationService notificationService)
+    public PlanningCollectionViewModel(Plugin.LocalNotification.INotificationService notificationService)
     {
         IsLoaded = false;
         this.notificationService = notificationService;
@@ -34,7 +34,7 @@ public partial class PlanningViewModel : TourDetailsCollectionBase, IQueryAttrib
         WeakReferenceMessenger.Default.Register<ReloadPlanningItemsMessage>(this, OnReloadPlanningItemsReceived);
     }
 #else
-    public PlanningViewModel(Services.NotificationService notificationService)
+    public PlanningCollectionViewModel(Services.NotificationService notificationService)
     {
         this.notificationService = notificationService;
         IsLoaded = false;
