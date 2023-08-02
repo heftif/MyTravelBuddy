@@ -204,6 +204,15 @@
                 <Setter Property="Background" Value="LightGray"/>
             </Style>
 
+            <Style x:Key="roundButtonStyle" TargetType="ImageButton">
+                <Setter Property="HeightRequest" Value="50"/>
+                <Setter Property="WidthRequest" Value="50"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+                <Setter Property="HorizontalOptions" Value="Center"/>
+                <Setter Property="CornerRadius" Value="25"/>
+                <Setter Property="Background" Value="LightGray"/>
+            </Style>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

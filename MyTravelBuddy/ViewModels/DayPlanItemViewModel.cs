@@ -3,7 +3,7 @@ namespace MyTravelBuddy.ViewModels;
 
 public partial class DayPlanItemViewModel : DomainObjectViewModel
 {
-    DayPlan dayPlan;
+    public DayPlan DayPlan;
 
     [ObservableProperty]
     string location;
@@ -17,6 +17,7 @@ public partial class DayPlanItemViewModel : DomainObjectViewModel
     [ObservableProperty]
     bool hasDocuments;
 
+
     [ObservableProperty]
     bool inActive;
 
@@ -26,9 +27,11 @@ public partial class DayPlanItemViewModel : DomainObjectViewModel
     [ObservableProperty]
     string dateString;
 
-    public DayPlanItemViewModel(DayPlan dayPlan)
+    public bool IsChanged;
+
+    public DayPlanItemViewModel(DayPlan dayPlan, bool isChanged = false)
     {
-        this.dayPlan = dayPlan;
+        DayPlan = dayPlan;
 
         Location = dayPlan.Location;
         TourDay = dayPlan.TourDay;
@@ -36,6 +39,9 @@ public partial class DayPlanItemViewModel : DomainObjectViewModel
         HasDocuments = dayPlan.HasDocuments;
         InActive = dayPlan.InActive;
 
+        IsChanged = isChanged;
+
+        //visualisation
         Name = $"Day {TourDay}: {Location}";
         if (dayPlan.Date != null)
         {

@@ -19,6 +19,9 @@ public partial class DailyPlannerViewModel : TourDetailsCollectionViewModelBase,
         App.ShellNavigationService.AddToShellStack(details);
     }
 
+    //todo set icon of trip on transportations, but this is an async function we can only perform after
+    //loading so this needs some thinking on how we could do that. => check if we could not add the
+    //objects as well as the ids in the sqlite database
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         SelectedMenuItem = details;
@@ -46,7 +49,7 @@ public partial class DailyPlannerViewModel : TourDetailsCollectionViewModelBase,
                 for(int i = 1; i <= tourDuration; i++)
                 {
                     var date = Tour.StartsOn.AddDays(i - 1);
-                    DayPlans.Add(new DayPlanItemViewModel(DayPlan.Empty(i, tourId.Value, date)));
+                    DayPlans.Add(new DayPlanItemViewModel(DayPlan.Empty(i, tourId.Value, date), true));
                 }
             }
         }
@@ -62,6 +65,43 @@ public partial class DailyPlannerViewModel : TourDetailsCollectionViewModelBase,
     public override bool Validate()
     {
         return true;
+    }
+
+    [RelayCommand]
+    public async Task EditDetailsAsync()
+    {
+
+    }
+
+    [RelayCommand]
+    public async Task ShowTransportationAsync()
+    {
+
+    }
+
+    [RelayCommand]
+    public async Task ShowOvernightAsync()
+    {
+
+    }
+
+    [RelayCommand]
+    public async Task ShowDocumentsAsync()
+    {
+
+    }
+
+    [RelayCommand]
+    public async Task DisappearingAsync()
+    {
+        if(DayPlans.Any(x => x.IsChanged))
+        {
+            foreach (var item in DayPlans.Where(x => x.IsChanged))
+            {
+                //todo add mapping for this to work correctly
+                await SaveDomainObject(item.DayPlan);
+            }
+        }
     }
 
     //triggered when pressing back button
