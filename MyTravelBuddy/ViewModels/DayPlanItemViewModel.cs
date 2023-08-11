@@ -9,7 +9,7 @@ public partial class DayPlanItemViewModel : DomainObjectViewModel
     string location;
 
     [ObservableProperty]
-    int tourDay;
+    double tourDay;
 
     [ObservableProperty]
     DateTime? date;

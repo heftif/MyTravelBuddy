@@ -14,7 +14,7 @@ public class DayPlan : IDomainObject
     public int TourId { get; set; }
 
     public string Location { get; set; }
-    public int TourDay { get; set; }
+    public double TourDay { get; set; }
     public DateTime? Date { get; set; }
 
     public bool HasDocuments { get; set; }
@@ -26,7 +26,7 @@ public class DayPlan : IDomainObject
         return DayPlanId;
     }
 
-    public static DayPlan Empty(int tourDay, int tourId, DateTime date)
+    public static DayPlan Empty(double tourDay, int tourId, DateTime date)
     {
         return new DayPlan
         {

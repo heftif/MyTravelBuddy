@@ -1,0 +1,284 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MyTravelBuddy.Views.MapLocationFinderView"
+             xmlns:viewmodel = "clr-namespace:MyTravelBuddy.ViewModels"
+             x:DataType="viewmodel:MapLocationFinderViewModel"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:maps="clr-namespace:Microsoft.Maui.Controls.Maps;assembly=Microsoft.Maui.Controls.Maps"
+             xmlns:loc="clr-namespace:Microsoft.Maui.Devices.Sensors;assembly=Microsoft.Maui.Essentials"
+             Title="MapLocationFinderView">
+
+    <ScrollView>
+        <VerticalStackLayout>
+
+            <Grid HeightRequest="230" Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="3*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="80"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Label Grid.Row="0" Grid.Column="0" Text="Street"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       Style="{StaticResource MediumLabel}"/>
+
+                    <Entry Grid.Row="0" Grid.Column="1"
+                           Text="{Binding Street}"
+                           IsTextPredictionEnabled="True"/>
+               
+
+                <Label Grid.Row="1" Grid.Column="0" Text="City"
+                       Style="{StaticResource MediumLabel}"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"/>
+                <Entry Grid.Row="1" Grid.Column="1"
+                       Text="{Binding City}"
+                       IsTextPredictionEnabled="True">
+                        <Entry.Behaviors>
+                                <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding ValidatePropertyCommand}"/>
+                            </Entry.Behaviors>
+                            <Entry.Triggers>
+                                <DataTrigger TargetType ="Entry"
+                                             Binding="{Binding IsCityValid}"
+                                             Value="False"
+                                             >
+                                    <Setter Property="Background" Value="Red"/>
+                                </DataTrigger>
+                            </Entry.Triggers>
+                    </Entry>
+
+                <Label Grid.Row="2" Grid.Column="0" Text="Country"
+                       Style="{StaticResource MediumLabel}"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"/>
+
+                <VerticalStackLayout Grid.Row="2" Grid.Column="1">
+                    <Entry 
+                       Text="{Binding Country}"
+                       IsTextPredictionEnabled="True">
+                        <Entry.Behaviors>
+                            <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding ValidatePropertyCommand}"/>
+                        </Entry.Behaviors>
+                        <Entry.Triggers>
+                            <DataTrigger TargetType ="Entry"
+                                         Binding="{Binding IsCountryValid}"
+                                         Value="False"
+                                         >
+                                <Setter Property="Background" Value="Red"/>
+                            </DataTrigger>
+                        </Entry.Triggers>
+                    </Entry>
+
+                     <!-- error label-->
+                    <Label Text="{Binding Error}" IsVisible="{Binding HasErrors}" Style="{StaticResource ErrorLabel}"/> <!-- no converter needed for isVisible-->
+                </VerticalStackLayout>
+
+                <Button Grid.Row="3" Grid.ColumnSpan="2" Margin="0,10,0,0"
+                    Text="Import from Google Calendar"
+                        Command="{Binding GetFromCalendarCommand}"/>
+
+            </Grid>
+
+            <Grid>
+            <maps:Map x:Name="mappy" IsShowingUser="True" IsTrafficEnabled="True"
+                      MapType="Hybrid"
+                      HeightRequest="500"> <!-- Heightrequest was necessary for the map to show up -->
+                <maps:Map.MapElements>
+                    <maps:Polygon StrokeColor="#FF9900"
+                                StrokeWidth="8"
+                                FillColor="#88FF9900">
+                        <maps:Polygon.Geopath>
+                            <loc:Location>
+                                <x:Arguments>
+                                    <x:Double>47.6458676</x:Double>
+                                    <x:Double>-122.1356007</x:Double>
+                                </x:Arguments>
+                            </loc:Location>
+                            <loc:Location>
+                                <x:Arguments>
+                                    <x:Double>47.6458097</x:Double>
+                                    <x:Double>-122.142789</x:Double>
+                                </x:Arguments>
+                            </loc:Location>
+                            <loc:Location>
+                                <x:Arguments>
+                                    <x:Double>47.6367593</x:Double>
+                                    <x:Double>-122.1428104</x:Double>
+                                </x:Arguments>
+                            </loc:Location>
+                            <loc:Location>
+                                <x:Arguments>
+                                    <x:Double>47.6368027</x:Double>
+                                    <x:Double>-122.1398707</x:Double>
+                                </x:Arguments>
+                            </loc:Location>
+                            <loc:Location>
+                                <x:Arguments>
+                                    <x:Double>47.6380172</x:Double>
+                                    <x:Double>-122.1376177</x:Double>
+                                </x:Arguments>
+                            </loc:Location>
+                            <loc:Location>
+                                <x:Arguments>
+                                    <x:Double>47.640663</x:Double>
+                                    <x:Double>-122.1352359</x:Double>
+                                </x:Arguments>
+                            </loc:Location>
+                            <loc:Location>
+                                <x:Arguments>
+                                    <x:Double>47.6426148</x:Double>
+                                    <x:Double>-122.1347209</x:Double>
+                                </x:Arguments>
+                            </loc:Location>
+                            <loc:Location>
+                                <x:Arguments>
+                                    <x:Double>47.6458676</x:Double>
+                                    <x:Double>-122.1356007</x:Double>
+                                </x:Arguments>
+                            </loc:Location>
+                        </maps:Polygon.Geopath>
+                    </maps:Polygon>
+                    <maps:Polygon StrokeColor="#1BA1E2"
+                              StrokeWidth="8"
+                              FillColor="#881BA1E2">
+                        <maps:Polygon.Geopath>
+                            <loc:Location>
+                                <x:Arguments>
+                                    <x:Double>47.6368678</x:Double>
+                                    <x:Double>-122.137305</x:Double>
+                                </x:Arguments>
+                            </loc:Location>
+                            <loc:Location>
+                                <x:Arguments>
+                                    <x:Double>47.6368894</x:Double>
+                                    <x:Double>-122.134655</x:Double>
+                                </x:Arguments>
+                            </loc:Location>
+                            <loc:Location>
+                                <x:Arguments>
+                                    <x:Double>47.6359424</x:Double>
+                                    <x:Double>-122.134655</x:Double>
+                                </x:Arguments>
+                            </loc:Location>
+                            <loc:Location>
+                                <x:Arguments>
+                                    <x:Double>47.6359496</x:Double>
+                                    <x:Double>-122.1325521</x:Double>
+                                </x:Arguments>
+                            </loc:Location>
+                            <loc:Location>
+                                <x:Arguments>
+                                    <x:Double>47.6424124</x:Double>
+                                    <x:Double>-122.1325199</x:Double>
+                                </x:Arguments>
+                            </loc:Location>
+                            <loc:Location>
+                                <x:Arguments>
+                                    <x:Double>47.642463</x:Double>
+                                    <x:Double>-122.1338932</x:Double>
+                                </x:Arguments>
+                            </loc:Location>
+                            <loc:Location>
+                                <x:Arguments>
+                                    <x:Double>47.6406414</x:Double>
+                                    <x:Double>-122.1344833</x:Double>
+                                </x:Arguments>
+                            </loc:Location>
+                            <loc:Location>
+                                <x:Arguments>
+                                    <x:Double>47.6384943</x:Double>
+                                    <x:Double>-122.1361248</x:Double>
+                                </x:Arguments>
+                            </loc:Location>
+                            <loc:Location>
+                                <x:Arguments>
+                                    <x:Double>47.6372943</x:Double>
+                                    <x:Double>-122.1376912</x:Double>
+                                </x:Arguments>
+                            </loc:Location>
+                            <loc:Location>
+                                <x:Arguments>
+                                    <x:Double>47.6368678</x:Double>
+                                    <x:Double>-122.137305</x:Double>
+                                </x:Arguments>
+                            </loc:Location>
+                        </maps:Polygon.Geopath>
+                    </maps:Polygon>
+                    <maps:Polyline StrokeColor="Black"
+                                StrokeWidth="12">
+                        <maps:Polyline.Geopath>
+                            <loc:Location>
+                                <x:Arguments>
+                                    <x:Double>47.6381401</x:Double>
+                                    <x:Double>-122.1317367</x:Double>
+                                </x:Arguments>
+                            </loc:Location>
+                            <loc:Location>
+                                <x:Arguments>
+                                    <x:Double>47.6381473</x:Double>
+                                    <x:Double>-122.1350841</x:Double>
+                                </x:Arguments>
+                            </loc:Location>
+                            <loc:Location>
+                                <x:Arguments>
+                                    <x:Double>47.6382847</x:Double>
+                                    <x:Double>-122.1353094</x:Double>
+                                </x:Arguments>
+                            </loc:Location>
+                            <loc:Location>
+                                <x:Arguments>
+                                    <x:Double>47.6384582</x:Double>
+                                    <x:Double>-122.1354703</x:Double>
+                                </x:Arguments>
+                            </loc:Location>
+                            <loc:Location>
+                                <x:Arguments>
+                                    <x:Double>47.6401136</x:Double>
+                                    <x:Double>-122.1360819</x:Double>
+                                </x:Arguments>
+                            </loc:Location>
+                            <loc:Location>
+                                <x:Arguments>
+                                    <x:Double>47.6403883</x:Double>
+                                    <x:Double>-122.1364681</x:Double>
+                                </x:Arguments>
+                            </loc:Location>
+                            <loc:Location>
+                                <x:Arguments>
+                                    <x:Double>47.6407426</x:Double>
+                                    <x:Double>-122.1377019</x:Double>
+                                </x:Arguments>
+                            </loc:Location>
+                            <loc:Location>
+                                <x:Arguments>
+                                    <x:Double>47.6412558</x:Double>
+                                    <x:Double>-122.1404056</x:Double>
+                                </x:Arguments>
+                            </loc:Location>
+                            <loc:Location>
+                                <x:Arguments>
+                                    <x:Double>47.6414148</x:Double>
+                                    <x:Double>-122.1418647</x:Double>
+                                </x:Arguments>
+                            </loc:Location>
+                            <loc:Location>
+                                <x:Arguments>
+                                    <x:Double>47.6414654</x:Double>
+                                    <x:Double>-122.1432702</x:Double>
+                                </x:Arguments>
+                            </loc:Location>
+                        </maps:Polyline.Geopath>
+                    </maps:Polyline>
+                </maps:Map.MapElements>
+                </maps:Map>
+            </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

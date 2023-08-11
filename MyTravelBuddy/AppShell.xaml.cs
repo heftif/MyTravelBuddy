@@ -17,6 +17,9 @@ public partial class AppShell : Shell
 
         Routing.RegisterRoute(nameof(DailyPlannerView), typeof(DailyPlannerView));
         Routing.RegisterRoute(nameof(DailyPlannerViewModel), typeof(DailyPlannerViewModel));
+
+        Routing.RegisterRoute(nameof(MapLocationFinderView), typeof(MapLocationFinderView));
+        Routing.RegisterRoute(nameof(MapLocationFinderViewModel), typeof(MapLocationFinderViewModel));
     }
 }
 

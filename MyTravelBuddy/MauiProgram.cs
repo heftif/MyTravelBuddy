@@ -12,6 +12,7 @@ public static class MauiProgram
 		builder
 			.UseMauiApp<App>()
 			.UseMauiCommunityToolkit()
+            .UseMauiMaps()
             .ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -51,6 +52,11 @@ public static class MauiProgram
         //daily list
         builder.Services.AddTransient<DailyPlannerViewModel>();
         builder.Services.AddTransient<DailyPlannerView>();
+
+        //map view page
+        builder.Services.AddSingleton<MapLocationFinderView>();
+        builder.Services.AddSingleton<MapLocationFinderViewModel>();
+
 
         //settings page
         builder.Services.AddSingleton<SettingsPage>();

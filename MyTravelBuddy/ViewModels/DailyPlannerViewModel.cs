@@ -70,25 +70,34 @@ public partial class DailyPlannerViewModel : TourDetailsCollectionViewModelBase,
     [RelayCommand]
     public async Task EditDetailsAsync()
     {
-
+        //simplest of all of them -> enter a location and a name -> maybe we could gather this info direclty from
+        //transportation and stay!
     }
 
     [RelayCommand]
     public async Task ShowTransportationAsync()
     {
-
+        //add google maps view of a route (is that possible)
     }
 
     [RelayCommand]
     public async Task ShowOvernightAsync()
     {
+        //add info about overnight stay -> could we take this from google or import it to google?
+        //or at least get some google maps where the location can be searched and saved?
+
+
+        await Shell.Current.GoToAsync(nameof(MapLocationFinderView), true, new Dictionary<string, object>
+        {
+
+        });
 
     }
 
     [RelayCommand]
     public async Task ShowDocumentsAsync()
     {
-
+        //add documents for travel
     }
 
     [RelayCommand]

@@ -87,14 +87,14 @@
                                     <ImageButton Grid.Row="1"
                                             Grid.RowSpan="2"
                                             Grid.Column="2"
-                                            Source="car.png"
+                                            Source="overnight.png"
                                             Style="{StaticResource roundButtonStyle}"
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:DailyPlannerViewModel}}, Path=ShowOvernightCommand}"/>
 
                                     <ImageButton Grid.Row="1"
                                             Grid.RowSpan="2"
                                             Grid.Column="3"
-                                            Source="car.png"
+                                            Source="document.png"
                                             Style="{StaticResource roundButtonStyle}"
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:DailyPlannerViewModel}}, Path=ShowDocumentsCommand}"/>
                                 </Grid>
