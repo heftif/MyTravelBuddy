@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MyTravelBuddy.Views.WayPointDisplayView"
+             xmlns:maps="clr-namespace:Microsoft.Maui.Controls.Maps;assembly=Microsoft.Maui.Controls.Maps"
+             xmlns:viewmodels ="clr-namespace:MyTravelBuddy.ViewModels"
+             x:DataType="viewmodels:WayPointDisplayViewModel"
+             xmlns:loc="clr-namespace:Microsoft.Maui.Devices.Sensors;assembly=Microsoft.Maui.Essentials"
+             Title="WayPointDisplayView">
+    <ScrollView>
+     <VerticalStackLayout
+         Spacing="10"
+         Padding="3">
+
+            <Button Text="Add Start Location" Command="{Binding ChooseLocationCommand}" CommandParameter="start"/>
+            <Button Text="Add End Location" Command="{Binding ChooseLocationCommand}" CommandParameter="end"/>
+
+            <Grid>
+            <maps:Map x:Name="mappy" IsShowingUser="True" IsTrafficEnabled="True"
+                      MapType="Street"
+                      HeightRequest="500"
+                      ItemsSource="{Binding WayPoints}"
+                      > <!-- Heightrequest was necessary for the map to show up -->
+                <x:Arguments>
+                    <MapSpan>
+                        <x:Arguments>
+                            <loc:Location>
+                                <x:Arguments>
+                                    <x:Double>36.9628066</x:Double>
+                                    <x:Double>-122.0194722</x:Double>
+                                </x:Arguments>
+                            </loc:Location>
+                            <x:Double>0.01</x:Double>
+                            <x:Double>0.01</x:Double>
+                        </x:Arguments>
+                    </MapSpan>
+                </x:Arguments>
+                <maps:Map.MapElements>
+                    
+                </maps:Map.MapElements>
+                </maps:Map>
+            </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

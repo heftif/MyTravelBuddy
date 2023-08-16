@@ -26,6 +26,8 @@ public class Tour : IDomainObject
 
     public byte[] Image { get; set; }
 
+    public bool Active { get; set; }
+    public bool Current { get; set; }
     //public string StartsAt { get; set; }
     //public string EndsAt { get; set; }
 

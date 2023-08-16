@@ -53,6 +53,10 @@ public static class MauiProgram
         builder.Services.AddTransient<DailyPlannerViewModel>();
         builder.Services.AddTransient<DailyPlannerView>();
 
+        //waypoint view page
+        builder.Services.AddSingleton<WayPointDisplayView>();
+        builder.Services.AddSingleton<WayPointDisplayViewModel>();
+
         //map view page
         builder.Services.AddSingleton<MapLocationFinderView>();
         builder.Services.AddSingleton<MapLocationFinderViewModel>();

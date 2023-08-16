@@ -16,11 +16,10 @@
 
     <ScrollView>
         <VerticalStackLayout
-            Spacing="25"
-            Padding="3"
-            VerticalOptions="Start">
+            Spacing="15"
+            Padding="3">
 
-                <!-- use grid to overlay text and image button-->
+            <!-- use grid to overlay text and image button-->
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition />
@@ -43,8 +42,7 @@
                 </Grid>
 
                 <CollectionView ItemsSource="{Binding Tours}"
-                                SelectionMode="None"
-                                >
+                                SelectionMode="None">
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="model:Tour">
                             <Grid Margin="0,0,0,5">
@@ -62,7 +60,26 @@
                                              Grid.Row="0"
                                              Command="{Binding OpenTourCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MainPageViewModel}}}"
                                              CommandParameter="{Binding .}"
-                                             />
+                                             >
+                                    <ImageButton.Triggers>
+                                        <DataTrigger TargetType="ImageButton"
+                                                 Binding="{Binding Current}"
+                                                 Value="True">
+                                            <Setter Property="BorderColor"
+                                                    Value="Red" />
+                                            <Setter Property="BorderWidth"
+                                                    Value="2"/>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="ImageButton"
+                                                 Binding="{Binding Active}"
+                                                 Value="False">
+                                            <Setter Property="BorderColor"
+                                                    Value="Gray" />
+                                            <Setter Property="BorderWidth"
+                                                    Value="2"/>
+                                        </DataTrigger>
+                                    </ImageButton.Triggers>
+                                </ImageButton>
 
                                 <Label Text="{Binding Name}"  Grid.Row="0" Style="{StaticResource MainOverlayLabel}"/>
 
@@ -71,6 +88,7 @@
                     </CollectionView.ItemTemplate>
                 </CollectionView>
 
+            
 
         </VerticalStackLayout>
     </ScrollView>

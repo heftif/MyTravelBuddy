@@ -89,7 +89,8 @@
                                             Grid.Column="2"
                                             Source="overnight.png"
                                             Style="{StaticResource roundButtonStyle}"
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:DailyPlannerViewModel}}, Path=ShowOvernightCommand}"/>
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:DailyPlannerViewModel}}, Path=ShowOvernightCommand}"
+                                            CommandParameter="{Binding .}"/>
 
                                     <ImageButton Grid.Row="1"
                                             Grid.RowSpan="2"

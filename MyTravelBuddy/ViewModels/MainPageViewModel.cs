@@ -59,6 +59,13 @@ public partial class MainPageViewModel : BaseViewModel
 
 		if(toursPlanned)
 		{
+            foreach (var tour in tours)
+            {
+                tour.Active = tour.EndsOn >= DateTime.Now;
+                tour.Current = tour.EndsOn >= DateTime.Now && tour.StartsOn <= DateTime.Now;
+            }    
+                
+
 			LoadTours(tours);
         }
         
@@ -67,8 +74,13 @@ public partial class MainPageViewModel : BaseViewModel
 
 	void LoadTours(IList<Tour> tours)
 	{
-        foreach (var tour in tours)
-            Tours.Add(tour);
+        var activeTours = tours.Where(x=> x.Active == true).OrderBy(x => x.StartsOn);
+        var passedTours = tours.Where(x => x.Active == false).OrderBy(x => x.StartsOn);
+
+        var allTours = activeTours.Concat(passedTours);
+
+        foreach (var t in allTours)
+            Tours.Add(t);
 	}
 
     //call must be sync, else it does not work properly for android
@@ -125,12 +137,11 @@ public partial class MainPageViewModel : BaseViewModel
         //name of the trip
         var destination = await App.AlertService.ShowPrompt("Destination", "Where are you going?");
 
-        //at the moment, we can only have one pop up, as we can't close async. This will be fixed with new version
 
         //type of trip
         var tourTypes = await App.DatabaseService.ListAll<TourType>();
-        //var tourType = (TourType)await Shell.Current.ShowPopupAsync(new NewTourPopUpView("What kind of trip do you want to take?", tourTypes));
-        var tourType = tourTypes.Where(x => x.Usage == TourUsage.CycleUsage).FirstOrDefault();//setting default value for now
+        var tourType = (TourType)await Shell.Current.ShowPopupAsync(new NewTourPopUpView("What kind of trip do you want to take?", tourTypes));
+        //var tourType = tourTypes.Where(x => x.Usage == TourUsage.CycleUsage).FirstOrDefault(); //setting default value 
 
         //duration of trip
         var dates = (DateTime[])await Shell.Current.ShowPopupAsync(new TourDatePickerPopUpView());
@@ -141,14 +152,14 @@ public partial class MainPageViewModel : BaseViewModel
 
         //vehicle to and from
         var vehicles = await App.DatabaseService.ListAll<Vehicle>();
-        //var vehicleToAndFrom = (Vehicle)await Shell.Current.ShowPopupAsync(new NewTourPopUpView("What it you mode of transport to and from the destination?", vehicles));
-        var vehicleToAndFrom = vehicles.Where(x => x.Usage == TourUsage.PlaneUsage).FirstOrDefault();
+        var vehicleToAndFrom = (Vehicle)await Shell.Current.ShowPopupAsync(new NewTourPopUpView("What it you mode of transport to and from the destination?", vehicles));
+        //var vehicleToAndFrom = vehicles.Where(x => x.Usage == TourUsage.PlaneUsage).FirstOrDefault(); //setting default value 
 
         //vehicle at
-        //var vehiclesAt = (Vehicle)await Shell.Current.ShowPopupAsync(new NewTourPopUpView("What it you mode of transport at the destination?", vehicles));
-        var vehicleAt = vehicles.Where(x => x.Usage == TourUsage.BikeUsage).FirstOrDefault();
+        var vehicleAt = (Vehicle)await Shell.Current.ShowPopupAsync(new NewTourPopUpView("What it you mode of transport at the destination?", vehicles));
+        //var vehicleAt = vehicles.Where(x => x.Usage == TourUsage.BikeUsage).FirstOrDefault(); //setting default value 
 
-        if(string.IsNullOrEmpty(name) || string.IsNullOrEmpty(destination))
+        if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(destination))
         {
             App.AlertService.ShowAlert("Error", "Either no name or no destination entered, Tour could not be planned.");
         }

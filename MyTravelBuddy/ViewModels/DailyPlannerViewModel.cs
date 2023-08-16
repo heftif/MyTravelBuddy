@@ -81,15 +81,17 @@ public partial class DailyPlannerViewModel : TourDetailsCollectionViewModelBase,
     }
 
     [RelayCommand]
-    public async Task ShowOvernightAsync()
+    public async Task ShowOvernightAsync(DayPlanItemViewModel dayPlanViewModel)
     {
-        //add info about overnight stay -> could we take this from google or import it to google?
-        //or at least get some google maps where the location can be searched and saved?
 
+        var dayPlan = dayPlanViewModel.DayPlan;
+        var allWayPoints = await App.DatabaseService.ListAll<WayPoint>();
+        var wayPoints = allWayPoints.Where(x => x.DayPlanId == dayPlan.DayPlanId).ToList();
 
-        await Shell.Current.GoToAsync(nameof(MapLocationFinderView), true, new Dictionary<string, object>
+        await Shell.Current.GoToAsync(nameof(WayPointDisplayView), true, new Dictionary<string, object>
         {
-
+            { "DayPlan", dayPlan },
+            { "WayPoints", wayPoints}
         });
 
     }

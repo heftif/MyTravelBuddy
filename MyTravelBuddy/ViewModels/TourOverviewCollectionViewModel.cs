@@ -134,7 +134,7 @@ public partial class TourOverviewCollectionViewModel : TourDetailsCollectionView
         GeneralLocation = Tour.GeneralLocation;
         Name = Tour.Name;
         StartsOn = Tour.StartsOn;
-        EndsOn = Tour.StartsOn;
+        EndsOn = Tour.EndsOn;
 
         Title = Tour.Name;
         TourImage = Tour.Image;

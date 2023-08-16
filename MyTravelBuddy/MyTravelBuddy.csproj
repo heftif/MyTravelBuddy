@@ -60,7 +60,7 @@
 		<PackageReference Include="SQLiteNetExtensions" Version="2.1.0" />
 		<PackageReference Include="SQLiteNetExtensions.Async" Version="2.1.0" />
 		<PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.5" />
-		<PackageReference Include="CommunityToolkit.Maui" Version="5.2.0" />
+		<PackageReference Include="CommunityToolkit.Maui" Version="5.3.0" />
 		<PackageReference Include="Plugin.LocalNotification" Version="10.1.8" />
 		<PackageReference Include="Microsoft.Maui.Controls.Maps" Version="7.0.92" />
 	</ItemGroup>
@@ -103,6 +103,7 @@
 	  <None Remove="Resources\Images\overnight.svg" />
 	  <None Remove="Resources\Images\overnight.png" />
 	  <None Remove="Resources\Images\document.png" />
+	  <None Remove="Views\Behaviours\" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Models\" />
@@ -110,6 +111,7 @@
 	  <Folder Include="ViewModels\" />
 	  <Folder Include="Views\" />
 	  <Folder Include="Models\Messages\" />
+	  <Folder Include="Views\Behaviours\" />
 	</ItemGroup>
 	<ItemGroup>
 	  <BundleResource Include="Resources\Images\car.svg" />

@@ -20,6 +20,9 @@ public partial class AppShell : Shell
 
         Routing.RegisterRoute(nameof(MapLocationFinderView), typeof(MapLocationFinderView));
         Routing.RegisterRoute(nameof(MapLocationFinderViewModel), typeof(MapLocationFinderViewModel));
+
+        Routing.RegisterRoute(nameof(WayPointDisplayView), typeof(WayPointDisplayView));
+        Routing.RegisterRoute(nameof(WayPointDisplayViewModel), typeof(WayPointDisplayViewModel));
     }
 }
 
