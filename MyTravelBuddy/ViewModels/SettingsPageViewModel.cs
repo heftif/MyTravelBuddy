@@ -70,8 +70,8 @@ public partial class SettingsPageViewModel : DomainObjectViewModel, IQueryAttrib
 
     void MapProperties()
     {
-        currentPushSetting.CloseReminders = CloseRemindersEnabled;
-        currentPushSetting.FarReminders = FarRemindersEnabled;
+        currentPushSetting = Mapper.Map(currentPushSetting, this);
+        
     }
 
     //triggered when pressing back button

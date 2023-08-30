@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Maui.Controls.Maps;
 using MyTravelBuddy.Models.Messages;
 
 namespace MyTravelBuddy.ViewModels;
@@ -39,15 +40,7 @@ public partial class MapLocationFinderViewModel : DomainObjectViewModel, IQueryA
     [ObservableProperty]
     ObservableCollection<Place> bindablePlaces;
 
-    [ObservableProperty]
-    Location location;
-
-    [ObservableProperty]
-    string address;
-
-    [ObservableProperty]
-    string name;
-
+    public bool CanSaveLocation => Places.Count > 0;
 
     WayPoint wayPoint;
 
@@ -55,9 +48,15 @@ public partial class MapLocationFinderViewModel : DomainObjectViewModel, IQueryA
 
     string wayPointType;
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CanSaveLocation))]
+    List<Place> places;
+
     public MapLocationFinderViewModel()
     {
         IsReady = false;
+
+        Places = new List<Place>();
 
         Validate();
     }
@@ -88,6 +87,12 @@ public partial class MapLocationFinderViewModel : DomainObjectViewModel, IQueryA
     [RelayCommand]
     public async Task ConfirmLocationAsync()
     {
+        if (BindablePlaces != null && BindablePlaces.Count > 0)
+        {
+            await DisappearingAsync();
+        }
+
+        await Shell.Current.GoToAsync("..", true);
 
     }
 
@@ -96,6 +101,35 @@ public partial class MapLocationFinderViewModel : DomainObjectViewModel, IQueryA
     {
 
     }
+
+
+    [RelayCommand]
+    public async Task MapClickedAsync(MapClickedEventArgs args)
+    {
+        //replace the found location with the clickedLocation
+        if(args?.Location != null)
+        {
+            IsReady = false;
+
+            if(BindablePlaces != null && BindablePlaces.Count > 0)
+                BindablePlaces.Clear();
+
+            //show location on map
+            var place = new Place
+            {
+                Location = args.Location,
+                Address = $"{City}, {Country}", //todo: fix this address
+                Description = "Test",
+            };
+
+            Places = new List<Place>() { place };
+            BindablePlaces = new ObservableCollection<Place>(Places);
+            IsReady = true;
+
+        }    
+    }
+
+
 
     [RelayCommand]
     public async Task ValidateProperty()
@@ -128,8 +162,8 @@ public partial class MapLocationFinderViewModel : DomainObjectViewModel, IQueryA
                     Description = "Test",
                 };
 
-                var placeList = new List<Place>() { place };
-                BindablePlaces = new ObservableCollection<Place>(placeList);
+                Places = new List<Place>() { place };
+                BindablePlaces = new ObservableCollection<Place>(Places);
                 IsReady = true;
 
             }
@@ -145,9 +179,6 @@ public partial class MapLocationFinderViewModel : DomainObjectViewModel, IQueryA
         IEnumerable<Location> locations = await Geocoding.Default.GetLocationsAsync(address);
 
         return locations?.FirstOrDefault();
-
-        //if (location != null)
-            //await App.AlertService.ShowAlertAsync("Location", $"Latitude: {location.Latitude}, Longitude: {location.Longitude}, Altitude: {location.Altitude}");
     }
 
     public override bool Validate()
@@ -171,36 +202,31 @@ public partial class MapLocationFinderViewModel : DomainObjectViewModel, IQueryA
     [RelayCommand]
     public async Task DisappearingAsync()
     {
-        MapProperties();
-
-        //call save on baseviewmodel to ensure validation etc.
-        var success = await SaveDomainObject(wayPoint);
-
-        if (success)
+        if (CanSaveLocation && Places.Count > 0)
         {
-            WeakReferenceMessenger.Default.Send(new ReloadWayPointsMessage(wayPoint));
+            MapProperties();
+
+            //call save on baseviewmodel to ensure validation etc.
+            var success = await SaveDomainObject(wayPoint);
+
+            if (success)
+            {
+                WeakReferenceMessenger.Default.Send(new ReloadWayPointsMessage(wayPoint));
+            }
         }
     }
 
     private void MapProperties()
     {
-        wayPoint.Latitude = Location.Latitude;
-        wayPoint.Longitude = Location.Longitude;
-        wayPoint.DayPlanId = dayPlan.DayPlanId;
-        wayPoint.Name = Name;
+        var place = Places.First();
 
-        if(wayPointType == "start")
+        if (place != null)
         {
-            wayPoint.SortOrder = 0;
-            wayPoint.IsStartPoint = true;
-            wayPoint.IsEndPoint = false;
-        }
+            if (wayPoint == null)
+                wayPoint = new WayPoint();
 
-        if (wayPointType == "end")
-        {
-            wayPoint.SortOrder = 1;
-            wayPoint.IsStartPoint = false;
-            wayPoint.IsEndPoint = true;
+            wayPoint = Mapper.Map(wayPoint, place, wayPointType, dayPlan.DayPlanId);
+
         }
 
     }

@@ -94,7 +94,7 @@ public class MapBehavior : BindableBehavior<MauiMap>
             return;
 
         var place = Places.First();
-        var distance = Distance.FromKilometers(1);
+        var distance = Distance.FromKilometers(10);
 
         map.MoveToRegion(MapSpan.FromCenterAndRadius(place.Location, distance));
     }

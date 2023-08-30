@@ -87,7 +87,7 @@
 
             </Grid>
 
-            <Button Text="Confirm Location" Command="{Binding ConfirmLocationCommand}" />
+            <Button Text="Confirm Location" Command="{Binding ConfirmLocationCommand}" IsEnabled="{Binding CanSaveLocation}"/>
 
             <Grid>
                 <maps:Map x:Name="mappy" IsShowingUser="True" IsTrafficEnabled="True"
@@ -98,7 +98,10 @@
                         <behaviours:MapBehavior 
                             IsReady="{Binding IsReady}"
                             Places="{Binding BindablePlaces}"/>
-                        </maps:Map.Behaviors>
+                        <toolkit:EventToCommandBehavior Command="{Binding MapClickedCommand}"
+                                                        EventName="MapClicked"
+                                                        x:TypeArguments="MapClickedEventArgs"/>
+                     </maps:Map.Behaviors>
 
                     <maps:Map.MapElements>
                     

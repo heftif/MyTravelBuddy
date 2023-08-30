@@ -105,11 +105,7 @@ public partial class PlanningItemViewModel : DomainObjectViewModel
 
     void MapProperties()
     {
-        planningItem.Name = Name;
-        planningItem.Description = Description;
-        planningItem.IsDone = IsDone;
-        planningItem.DaysBeforeEvent = DaysBeforeEvent;
-        planningItem.NotificationEnabled = NotificationEnabled;
+        planningItem = Mapper.Map(planningItem, this);
     }
 
     public override bool Validate()

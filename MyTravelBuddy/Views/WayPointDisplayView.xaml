@@ -6,38 +6,58 @@
              xmlns:viewmodels ="clr-namespace:MyTravelBuddy.ViewModels"
              x:DataType="viewmodels:WayPointDisplayViewModel"
              xmlns:loc="clr-namespace:Microsoft.Maui.Devices.Sensors;assembly=Microsoft.Maui.Essentials"
+             xmlns:behaviours="clr-namespace:MyTravelBuddy.Views.Behaviours"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              Title="WayPointDisplayView">
     <ScrollView>
      <VerticalStackLayout
          Spacing="10"
          Padding="3">
 
-            <Button Text="Add Start Location" Command="{Binding ChooseLocationCommand}" CommandParameter="start"/>
-            <Button Text="Add End Location" Command="{Binding ChooseLocationCommand}" CommandParameter="end"/>
+            <Grid Padding="5"  Margin="0,10,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <Button Grid.Row="0"
+                        Text="Add Start Location"
+                        Command="{Binding ChooseLocationCommand}"
+                        CommandParameter="start"
+                        IsVisible="{Binding HasNoStartPoint}"/>
+                <Label  Grid.Row="0"
+                        IsVisible="{Binding HasStartPoint}"
+                        Text="{Binding StartAddress}"
+                        />
+
+                <Button Grid.Row="1"
+                        Text="Add End Location"
+                        Command="{Binding ChooseLocationCommand}"
+                        CommandParameter="end"
+                        IsVisible="{Binding HasNoEndPoint}"/>
+
+                <Label  Grid.Row="1"
+                        IsVisible="{Binding HasEndPoint}"
+                        Text="{Binding EndAddress}"
+                        />
+
+            </Grid>
+            
 
             <Grid>
             <maps:Map x:Name="mappy" IsShowingUser="True" IsTrafficEnabled="True"
-                      MapType="Street"
-                      HeightRequest="500"
-                      ItemsSource="{Binding WayPoints}"
-                      > <!-- Heightrequest was necessary for the map to show up -->
-                <x:Arguments>
-                    <MapSpan>
-                        <x:Arguments>
-                            <loc:Location>
-                                <x:Arguments>
-                                    <x:Double>36.9628066</x:Double>
-                                    <x:Double>-122.0194722</x:Double>
-                                </x:Arguments>
-                            </loc:Location>
-                            <x:Double>0.01</x:Double>
-                            <x:Double>0.01</x:Double>
-                        </x:Arguments>
-                    </MapSpan>
-                </x:Arguments>
-                <maps:Map.MapElements>
+                          MapType="Street"
+                          HeightRequest="500"
+                          > <!-- Heightrequest was necessary for the map to show up -->
+                    <maps:Map.Behaviors>
+                        <behaviours:MapBehavior 
+                            IsReady="{Binding IsReady}"
+                            Places="{Binding BindablePlaces}"/>
+                     </maps:Map.Behaviors>
+
+                    <maps:Map.MapElements>
                     
-                </maps:Map.MapElements>
+                    </maps:Map.MapElements>
                 </maps:Map>
             </Grid>
         </VerticalStackLayout>

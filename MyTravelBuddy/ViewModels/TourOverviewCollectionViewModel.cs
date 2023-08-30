@@ -268,15 +268,7 @@ public partial class TourOverviewCollectionViewModel : TourDetailsCollectionView
 
     void MapProperties()
     {
-        Tour.VehicleToAndFromId = SelectedVehicleToAndFrom.VehicleId;
-        Tour.VehicleAtLocationId = SelectedVehicleAtLocation.VehicleId;
-        Tour.TourTypeId = SelectedTourType.TourTypeId;
-
-        Tour.Name = Name;
-        Tour.GeneralLocation = GeneralLocation;
-        Tour.StartsOn = StartsOn;
-        Tour.EndsOn = EndsOn;
-        Tour.Image = TourImage;
+        Tour = Mapper.Map(Tour, this);
     }
 
 
