@@ -31,8 +31,7 @@ public class SqlDatabase : ISqlDatabase
 
         //await Database.DeleteAllAsync<Vehicle>();
         //await Database.DeleteAllAsync<TourType>();
-
-        await Database.DeleteAllAsync<WayPoint>();
+        //await Database.DeleteAllAsync<WayPoint>();
 
         await CreateTables();
         await AddPlanningItems();
@@ -139,6 +138,7 @@ public class SqlDatabase : ISqlDatabase
         }
     }
 
+    //todo: implement method to list all with a condition, to use optimised sql!
     // generic method for listing all domain objects of a table
     public async Task<IList<TObject>> ListAll<TObject>() where TObject : IDomainObject, new()
     {

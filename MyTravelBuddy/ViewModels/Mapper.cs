@@ -4,13 +4,16 @@ namespace MyTravelBuddy.ViewModels;
 
 public static class Mapper
 {
-	public static WayPoint Map(WayPoint wayPoint, Place place, string wayPointType, int dayPlanId)
+	public static WayPoint Map(WayPoint wayPoint, Place place, Address address, string wayPointType, int dayPlanId)
 	{
         wayPoint.Latitude = place.Location.Latitude;
         wayPoint.Longitude = place.Location.Longitude;
         wayPoint.DayPlanId = dayPlanId;
         wayPoint.Name = place.Description;
-        wayPoint.Address = place.Address;
+
+        wayPoint.Street = address.Street;
+        wayPoint.City = address.City;
+        wayPoint.Country = address.Country;
 
         if (wayPointType == "start")
         {

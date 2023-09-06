@@ -15,20 +15,24 @@ public partial class WayPointDisplayViewModel : DomainObjectViewModel, IQueryAtt
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasNoStartPoint))]
     [NotifyPropertyChangedFor(nameof(StartAddress))]
+    [NotifyPropertyChangedFor(nameof(IsAddressVisible))]
     bool hasStartPoint;
 
     public bool HasNoStartPoint => !HasStartPoint;
 
-    public string StartAddress => HasStartPoint ? WayPoints.Where(x => x.IsStartPoint).Select(x => x.Address).FirstOrDefault() : "";
+    public string StartAddress => HasStartPoint ? WayPoints.Where(x => x.IsStartPoint).Select(x => x.GetAddress()).FirstOrDefault() : "";
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasNoEndPoint))]
     [NotifyPropertyChangedFor(nameof(EndAddress))]
+    [NotifyPropertyChangedFor(nameof(IsAddressVisible))]
     bool hasEndPoint;
 
     public bool HasNoEndPoint => !HasEndPoint;
 
-    public string EndAddress => HasEndPoint ? WayPoints.Where(x => x.IsEndPoint).Select(x => x.Address).FirstOrDefault() : "";
+    public string EndAddress => HasEndPoint ? WayPoints.Where(x => x.IsEndPoint).Select(x => x.GetAddress()).FirstOrDefault() : "";
+
+    public bool IsAddressVisible => HasEndPoint || HasStartPoint;
 
 
     [ObservableProperty]
@@ -44,16 +48,54 @@ public partial class WayPointDisplayViewModel : DomainObjectViewModel, IQueryAtt
         WeakReferenceMessenger.Default.Register<ReloadWayPointsMessage>(this, ReloadWayPoints);
 
         places = new List<Place>();
+
+        HasEndPoint = false;
+        HasStartPoint = false;
+
     }
 
 
     [RelayCommand]
     public async Task ChooseLocationAsync(string type)
     {
+        //if there is a start point and we set an end point, we give the start point as a place, so map is in the right place
+        WayPoint wayPoint = null;
+        if(type == "end" && WayPoints.Any(x => x.IsStartPoint))
+        {
+            wayPoint = WayPoints.Where(x => x.IsStartPoint).FirstOrDefault();
+        }
+
         await Shell.Current.GoToAsync(nameof(MapLocationFinderView), true, new Dictionary<string, object>
         {
             {"DayPlan", dayPlan },
-            {"Type", type }
+            {"Type", type },
+            {"Action", "create"},
+            {"WayPoint", wayPoint }
+        });
+
+    }
+
+    //todo: save endpoint from one day as startpoint from next day (but it can be overridden if they want)
+
+    [RelayCommand]
+    public async Task EditLocationAsync(string type)
+    {
+        WayPoint wayPoint = null;
+        if(type == "start")
+        {
+            wayPoint = WayPoints.Where(x => x.IsStartPoint).FirstOrDefault();
+        }
+        else if(type == "end")
+        {
+            wayPoint = WayPoints.Where(x => x.IsEndPoint).FirstOrDefault();
+        }
+
+        await Shell.Current.GoToAsync(nameof(MapLocationFinderView), true, new Dictionary<string, object>
+        {
+            {"DayPlan", dayPlan },
+            {"Type", type },
+            {"Action", "edit"},
+            {"WayPoint", wayPoint }
         });
 
     }
@@ -75,9 +117,13 @@ public partial class WayPointDisplayViewModel : DomainObjectViewModel, IQueryAtt
         //var stack = Shell.Current.Navigation.NavigationStack.ToArray();
     }
 
+    //todo: when loading with waypoints, make sure that the label is visible
     private void LoadWayPoints(List<WayPoint> wayPoints)
     {
         var sortedWayPoints = wayPoints.OrderBy(x => x.SortOrder);
+
+        foreach (var wayPoint in wayPoints)
+            WayPoints.Add(wayPoint);
 
         if (wayPoints.Any(x => x.IsStartPoint))
             HasStartPoint = true;
@@ -85,16 +131,14 @@ public partial class WayPointDisplayViewModel : DomainObjectViewModel, IQueryAtt
         if (wayPoints.Any(x => x.IsEndPoint))
             HasEndPoint = true;
 
-
-        foreach (var wayPoint in wayPoints)
-            WayPoints.Add(wayPoint);
-
         if (WayPoints.Count > 0)
         {
-            var wp = WayPoints.First();
-            //move map to one of the points
-            //todo: move map to such a zoom factor that you can see both points
-            MoveMap(-1, wp);
+            foreach(var wp in WayPoints)
+            {
+                AddToPlaces(-1, wp);
+            }
+
+            MoveMap();
         }
     }
 
@@ -106,14 +150,21 @@ public partial class WayPointDisplayViewModel : DomainObjectViewModel, IQueryAtt
         {
             if (wayPoint.IsStartPoint)
             {
+                //to trigger address update at the end
+                HasStartPoint = false;
+
                 var oldStartPointIdx = WayPoints.IndexOf(WayPoints.Where(x => x.IsStartPoint).FirstOrDefault());
 
                 SetWayPoint(oldStartPointIdx, wayPoint);
 
                 HasStartPoint = true;
+
             }
             else if (wayPoint.IsEndPoint)
             {
+                //to trigger address update at the end
+                HasEndPoint = false;
+
                 var oldEndPointIdx = WayPoints.IndexOf(WayPoints.Where(x => x.IsEndPoint).FirstOrDefault());
 
                 SetWayPoint(oldEndPointIdx, wayPoint);
@@ -133,14 +184,15 @@ public partial class WayPointDisplayViewModel : DomainObjectViewModel, IQueryAtt
 
         WayPoints.Add(wayPoint);
 
-        MoveMap(oldIdx, wayPoint);
+        AddToPlaces(oldIdx, wayPoint);
+        MoveMap();
     }
 
-    private void MoveMap(int oldIdx, WayPoint wayPoint)
+    private void AddToPlaces(int oldIdx, WayPoint wayPoint)
     {
-        //replace the found location with the clickedLocation
         IsReady = false;
 
+        //replace the found location with the clickedLocation
         if (places != null && places.Count > 0 && oldIdx >= 0)
             places.RemoveAt(oldIdx);
 
@@ -148,14 +200,17 @@ public partial class WayPointDisplayViewModel : DomainObjectViewModel, IQueryAtt
         var place = new Place
         {
             Location = new Location { Latitude = wayPoint.Latitude, Longitude = wayPoint.Longitude },
-            Address = wayPoint.Address, 
+            Address = wayPoint.GetAddress(),
             Description = wayPoint.Name,
         };
 
         places.Add(place);
+    }
+
+    private void MoveMap()
+    {
         BindablePlaces = new ObservableCollection<Place>(places);
         IsReady = true;
-
     }
    
 
@@ -164,4 +219,5 @@ public partial class WayPointDisplayViewModel : DomainObjectViewModel, IQueryAtt
         return true;
     }
 }
+
 

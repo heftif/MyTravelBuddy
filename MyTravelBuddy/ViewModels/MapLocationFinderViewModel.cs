@@ -40,7 +40,7 @@ public partial class MapLocationFinderViewModel : DomainObjectViewModel, IQueryA
     [ObservableProperty]
     ObservableCollection<Place> bindablePlaces;
 
-    public bool CanSaveLocation => Places.Count > 0;
+    public bool CanSaveLocation => Place != null && LocationHasChanged(); 
 
     WayPoint wayPoint;
 
@@ -50,7 +50,13 @@ public partial class MapLocationFinderViewModel : DomainObjectViewModel, IQueryA
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(CanSaveLocation))]
+    Place place;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CanSaveLocation))]
     List<Place> places;
+
+    public Address Address;
 
     public MapLocationFinderViewModel()
     {
@@ -61,8 +67,7 @@ public partial class MapLocationFinderViewModel : DomainObjectViewModel, IQueryA
         Validate();
     }
 
-    //todo: see if start or end location
-    //todo: see if we edit or create a new waypoint
+
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         if (!IsLoaded)
@@ -71,16 +76,30 @@ public partial class MapLocationFinderViewModel : DomainObjectViewModel, IQueryA
 
             wayPointType = query["Type"] as string;
 
-            Load();
+            wayPoint = query["WayPoint"] as WayPoint;
+
+            var action = query["Action"] as string;
+            if (action == "edit")
+            {
+                Load();
+            }
+            else if(action == "create" && wayPoint != null)
+            {
+                //place map on the starting waypoint
+                CreatePlaceAndMoveMap(new Location(wayPoint.Latitude, wayPoint.Longitude));
+            }
+
+            
         }
     }
 
     private void Load()
     {
-        //todo load the properties from the previous way point if we're editing
-           // LoadProperties();
-        
+        Street = wayPoint.Street;
+        City = wayPoint.City;
+        Country = wayPoint.Country;
 
+        CreatePlaceAndMoveMap(new Location(wayPoint.Latitude, wayPoint.Longitude));
     }
 
 
@@ -102,7 +121,30 @@ public partial class MapLocationFinderViewModel : DomainObjectViewModel, IQueryA
 
     }
 
+    private void CreatePlaceAndMoveMap(Location location)
+    {
+        Places.Clear();
 
+        //show location on map
+        Place = new Place
+        {
+            Location = location,
+            Address = GetPlaceAddress(), 
+            Description = "Test",
+        };
+
+        Places.Add(Place);
+        BindablePlaces = new ObservableCollection<Place>(Places);
+
+        if (Address != null)
+        {
+            MapAddressProperties();
+        }
+
+        IsReady = true;
+    }
+
+    //todo: get location from click on map
     [RelayCommand]
     public async Task MapClickedAsync(MapClickedEventArgs args)
     {
@@ -114,21 +156,11 @@ public partial class MapLocationFinderViewModel : DomainObjectViewModel, IQueryA
             if(BindablePlaces != null && BindablePlaces.Count > 0)
                 BindablePlaces.Clear();
 
-            //show location on map
-            var place = new Place
-            {
-                Location = args.Location,
-                Address = $"{City}, {Country}", //todo: fix this address
-                Description = "Test",
-            };
-
-            Places = new List<Place>() { place };
-            BindablePlaces = new ObservableCollection<Place>(Places);
-            IsReady = true;
+            await SetAddressAsync(args.Location);
+            CreatePlaceAndMoveMap(args.Location); 
 
         }    
     }
-
 
 
     [RelayCommand]
@@ -154,21 +186,50 @@ public partial class MapLocationFinderViewModel : DomainObjectViewModel, IQueryA
             }
             else
             {
-                //show location on map
-                var place = new Place
-                {
-                    Location = location,
-                    Address = $"{City}, {Country}",
-                    Description = "Test",
-                };
-
-                Places = new List<Place>() { place };
-                BindablePlaces = new ObservableCollection<Place>(Places);
-                IsReady = true;
-
+                await SetAddressAsync(location);
+                CreatePlaceAndMoveMap(location);
             }
         }
     }
+
+    async Task SetAddressAsync(Location location)
+    {
+        if (location == null)
+            return;
+
+        var placemarks = await Geocoding.Default.GetPlacemarksAsync(location);
+
+        if (placemarks.Count() > 0)
+        {
+            var placemark = placemarks.FirstOrDefault();
+
+            Address = new Address(placemark.FeatureName, placemark.Locality, placemark.CountryName, placemark.CountryCode, placemark.AdminArea, placemark.PostalCode);
+        }
+        else
+        {
+            Address = new Address(Street, City, Country, "", "", "");
+        }
+    }
+
+    string GetPlaceAddress()
+    {
+        if(Address != null)
+        {
+            return Address.GetAddressString();
+        }
+        else
+        {
+            return string.Join(",", new string[] { Street, City, Country });
+        }
+    }
+
+    void MapAddressProperties()
+    {
+        Street = Address.Street;
+        City = Address.City;
+        Country = Address.Country;
+    }
+
 
     async Task<Location> GetLocationAsync()
     {
@@ -196,6 +257,16 @@ public partial class MapLocationFinderViewModel : DomainObjectViewModel, IQueryA
         return !HasErrors;
     }
 
+    private bool LocationHasChanged()
+    {
+        if(Place != null && wayPoint != null)
+        {
+            return Place.Location.Longitude != wayPoint.Longitude && Place.Location.Latitude != wayPoint.Latitude;
+        }
+
+        return true;
+    }
+
 
     //todo only save when there were changes
     //triggered when navigating from this page
@@ -209,6 +280,9 @@ public partial class MapLocationFinderViewModel : DomainObjectViewModel, IQueryA
             //call save on baseviewmodel to ensure validation etc.
             var success = await SaveDomainObject(wayPoint);
 
+            //if this was an endpoint and there is no startpoint for the next day, then save this point as new startpoint for next day
+            await SaveNextDayStartPoint();
+
             if (success)
             {
                 WeakReferenceMessenger.Default.Send(new ReloadWayPointsMessage(wayPoint));
@@ -218,17 +292,51 @@ public partial class MapLocationFinderViewModel : DomainObjectViewModel, IQueryA
 
     private void MapProperties()
     {
-        var place = Places.First();
 
-        if (place != null)
+        if (Place != null)
         {
             if (wayPoint == null)
                 wayPoint = new WayPoint();
 
-            wayPoint = Mapper.Map(wayPoint, place, wayPointType, dayPlan.DayPlanId);
+            wayPoint = Mapper.Map(wayPoint, Place, Address, wayPointType, dayPlan.DayPlanId);
 
         }
+    }
 
+    //todo: think about if it would make sense to overwrite it, if we already have one there...
+    private async Task SaveNextDayStartPoint()
+    {
+        if(wayPointType == "end")
+        {
+            var nextDayDate = dayPlan.Date + TimeSpan.FromDays(1);
+
+            //get dayplan from next day, if there are days left in the trip
+            var allDayPlans = await App.DatabaseService.ListAll<DayPlan>();
+            var nextDayPlan = allDayPlans.Where(x => x.TourId == dayPlan.TourId && x.Date == nextDayDate).FirstOrDefault();
+
+            if(nextDayPlan != null)
+            {
+                //check if there is a start waypoint for the next day
+                var allWayPoints = await App.DatabaseService.ListAll<WayPoint>();
+                var nextDayStartWayPoint = allWayPoints.Where(x => x.DayPlanId == nextDayPlan.DayPlanId && x.IsStartPoint).FirstOrDefault();
+
+                //don't overwrite it 
+                if (nextDayStartWayPoint != null)
+                {
+                    return;
+                }
+                else
+                {
+                    var nextDayWaypoint = new WayPoint();
+
+                    nextDayWaypoint = Mapper.Map(nextDayWaypoint, Place, Address, "start", nextDayPlan.DayPlanId);
+
+                    await SaveDomainObject(nextDayWaypoint);
+                }
+            }  
+            
+
+        }
     }
 
 }
