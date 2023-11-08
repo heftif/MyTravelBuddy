@@ -1,5 +1,7 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
+using CommunityToolkit.Maui.Views;
+using Plugin.Maui.CalendarStore;
+using static Android.Provider.CalendarContract;
 
 namespace MyTravelBuddy.ViewModels;
 
@@ -9,12 +11,16 @@ public partial class DailyPlannerViewModel : TourDetailsCollectionViewModelBase,
 
     private double tourDuration;
 
+    ICalendarStore calendarService;
+
     //todo think about what happens when the dates of the travel are changed
     // we don't want to delete everything only when a date is changed. Maybe we can just grey them out
     // and make them inactive? maybe also work with negative ints?
-    public DailyPlannerViewModel()
+    public DailyPlannerViewModel(ICalendarStore calendarService)
     {
         IsLoaded = false;
+
+        this.calendarService = calendarService;
 
         App.ShellNavigationService.AddToShellStack(details);
     }
@@ -77,7 +83,44 @@ public partial class DailyPlannerViewModel : TourDetailsCollectionViewModelBase,
     [RelayCommand]
     public async Task ShowTransportationAsync()
     {
-        //add google maps view of a route (is that possible)
+        //add google maps view of a route (is that possible?)
+
+        //get and save a calendar for reference
+        var calendarSettings = await App.DatabaseService.ListAll<CalendarSetting>();
+
+        if (!calendarSettings.Any())
+        {
+            var calendars = await calendarService.GetCalendars();
+
+            //show a list with all the calendars and ask user to chose from which to import
+            var cal = (Calendar)await Shell.Current.ShowPopupAsync(new ChooseCalendarView("From which calendar do you want to import events?", calendars));
+
+            //save calendarsetting
+            if (cal != null)
+            {
+                var c = new CalendarSetting
+                {
+                    Id = cal.Id,
+                    Name = cal.Name,
+                    
+                };
+
+                await SaveDomainObject(c);
+            }
+        }
+
+
+        var calendar = (await App.DatabaseService.ListAll<CalendarSetting>()).ToList().FirstOrDefault();
+
+        //show list with events that the user wants to import, corresponding to the travel dates.
+        var events = await calendarService.GetEvents(calendar.Id, Tour.StartsOn, Tour.EndsOn);
+
+
+        var importEvents = (List<CalendarEvent>)await Shell.Current.ShowPopupAsync(new ChooseImportEventView("Which events do you want to import?", events));
+
+
+        //todo: for each event, we could try to create a dayplan based on the value that we were given. => logic might not be too easy
+
     }
 
     [RelayCommand]

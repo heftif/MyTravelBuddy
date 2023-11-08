@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
 using Plugin.LocalNotification;
+using Plugin.Maui.CalendarStore;
 
 namespace MyTravelBuddy;
 
@@ -32,6 +33,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton <IAlertService, AlertService>();
         builder.Services.AddSingleton<IShellNavigationService, ShellNavigationService>();
         builder.Services.AddSingleton<ImageUploadService>();
+        builder.Services.AddSingleton<ICalendarStore>(CalendarStore.Default);
 
 #if MACCATALYST || NETCOREAPP
         builder.Services.AddSingleton<Services.INotificationService, Services.NotificationService>();

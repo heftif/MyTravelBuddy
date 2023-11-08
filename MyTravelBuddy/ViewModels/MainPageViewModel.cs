@@ -137,6 +137,12 @@ public partial class MainPageViewModel : BaseViewModel
         //name of the trip
         var destination = await App.AlertService.ShowPrompt("Destination", "Where are you going?");
 
+        //cancle creation of new tour
+        if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(destination))
+        {
+            App.AlertService.ShowAlert("Error", "Either no name or no destination entered, Tour could not be planned.");
+            return;
+        }
 
         //type of trip
         var tourTypes = await App.DatabaseService.ListAll<TourType>();
@@ -159,33 +165,26 @@ public partial class MainPageViewModel : BaseViewModel
         var vehicleAt = (Vehicle)await Shell.Current.ShowPopupAsync(new NewTourPopUpView("What it you mode of transport at the destination?", vehicles));
         //var vehicleAt = vehicles.Where(x => x.Usage == TourUsage.BikeUsage).FirstOrDefault(); //setting default value 
 
-        if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(destination))
+        var tour = new Tour
         {
-            App.AlertService.ShowAlert("Error", "Either no name or no destination entered, Tour could not be planned.");
-        }
-        else
-        {
-            var tour = new Tour
-            {
-                Name = !string.IsNullOrEmpty(name) ? name : "",
-                GeneralLocation = !string.IsNullOrEmpty(destination) ? destination : "",
-                StartsOn = dates[0],
-                EndsOn = dates[1],
-                TourTypeId = tourType.TourTypeId,
-                VehicleToAndFromId = vehicleToAndFrom.VehicleId,
-                VehicleAtLocationId = vehicleAt.VehicleId,
-            };
+            Name = !string.IsNullOrEmpty(name) ? name : "",
+            GeneralLocation = !string.IsNullOrEmpty(destination) ? destination : "",
+            StartsOn = dates[0],
+            EndsOn = dates[1],
+            TourTypeId = tourType.TourTypeId,
+            VehicleToAndFromId = vehicleToAndFrom.VehicleId,
+            VehicleAtLocationId = vehicleAt.VehicleId,
+        };
 
-            var tourId = await App.DatabaseService.SaveItemAsync(tour);
+        var tourId = await App.DatabaseService.SaveItemAsync(tour);
 
-            //add the planning items for the newly created tour
-            await App.DatabaseService.AddPlanningItems(tourId);
+        //add the planning items for the newly created tour
+        await App.DatabaseService.AddPlanningItems(tourId);
 
-            tour.TourId = tourId;
+        tour.TourId = tourId;
 
-            Tours.Add(tour);
-        }
- 
+        Tours.Add(tour);
+
     }
 
     #region Notifications

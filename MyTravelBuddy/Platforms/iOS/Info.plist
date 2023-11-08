@@ -30,5 +30,7 @@
 	<string>Assets.xcassets/appicon.appiconset</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app shows your location on a map</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>This app wants to read from your calendar</string>
 </dict>
 </plist>

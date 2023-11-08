@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             CanBeDismissedByTappingOutsideOfPopup="False"
+             x:Class="MyTravelBuddy.Views.ChooseCalendarView"
+             >
+    <ScrollView>
+        <VerticalStackLayout Padding="5">
+
+
+            <Label x:Name="titleLabel"
+                   Style="{StaticResource TourDetailTitleLabel}"
+                   />
+
+            <CollectionView x:Name="selectItem"
+                            HeightRequest="200"
+                            MaximumHeightRequest="300"
+                            >
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border Padding="2"
+                                StrokeThickness="2"
+                                MinimumWidthRequest="200">
+                            <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10"/>
+                                </Border.StrokeShape>
+
+                            <Grid Padding="10">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <BoxView Color="{Binding Color}"
+                                     HeightRequest="32"
+                                     WidthRequest="32"
+                                     VerticalOptions="Center" />
+                                <Label Grid.Column="1"
+                                       VerticalOptions="Center"
+                                       Margin="10,0,0,0"
+                                       Text="{Binding Name}"
+                                       FontAttributes="Bold" />
+
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup Name="CommonStates">
+                                        <VisualState Name="Normal"></VisualState>
+                                        <VisualState Name="Selected">
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor" Value="LightSkyBlue"></Setter>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Button Clicked="Button_Clicked" HeightRequest="30" Text="Okay!"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</toolkit:Popup>
