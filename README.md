@@ -8,6 +8,8 @@ This app allows you to schedule your upcoming trips from the main screen. You ar
 It also allows you to set up a daily plan for your trip, add documents and visualize your route. The newest feature allows reading of calender events and will it is planned to be used in replacement of manually searching for
 your destination address. 
 
+The App stores the information on a local database using sqlite.
+
 ## Installation
 See https://dotnet.microsoft.com/en-us/apps/maui for installation details for .NET MAUI.
 
