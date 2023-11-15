@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Maui.Views;
 using Plugin.Maui.CalendarStore;
-using static Android.Provider.CalendarContract;
 
 namespace MyTravelBuddy.ViewModels;
 
